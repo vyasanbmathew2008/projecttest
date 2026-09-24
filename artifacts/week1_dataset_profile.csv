@@ -1,0 +1,5 @@
+dataset,rows,columns,duplicates,missing_cells,missing_%,numeric_columns,categorical_text_columns
+diabetes_dataset,70000,34,0,0,0.0,13,21
+infectious_disease,11571,13,0,39215,26.07,0,13
+heart_disease,10000,21,0,3054,1.45,9,12
+lung_disease_data,5200,8,91,2400,5.77,3,5

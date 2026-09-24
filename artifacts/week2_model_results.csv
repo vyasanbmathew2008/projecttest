@@ -1,0 +1,3 @@
+model,balanced_accuracy
+random_forest,0.49875
+logistic_regression,0.4871875

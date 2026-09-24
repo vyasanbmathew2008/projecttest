@@ -1,0 +1,10 @@
+{
+  "dataset": "heart_disease",
+  "target": "Heart Disease Status",
+  "model": "heart_disease_random_forest.joblib",
+  "metrics": {
+    "balanced_accuracy": 0.49875,
+    "macro_f1": 0.44382647385984425,
+    "roc_auc": 0.49980234375000004
+  }
+}
