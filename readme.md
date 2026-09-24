@@ -1,0 +1,3 @@
+- **Lung Disease X-Ray Dataset:** [(https://www.kaggle.com/datasets/fatemehmehrparvar/lung-disease?select=Lung+X-Ray+Image)]
+- **Skin Disease Img Dataset:**[(https://www.kaggle.com/datasets/haroonalam16/20-skin-diseases-dataset)]
+- **Skin Disease Img2 Dataset:**[(https://www.kaggle.com/datasets/pacificrm/skindiseasedataset)]
