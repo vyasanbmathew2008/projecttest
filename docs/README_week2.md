@@ -8,7 +8,7 @@ The default task is `heart_disease.csv` with target `Heart Disease Status`. The 
 
 ## Inputs and outputs
 
-Change `DATASET_NAME` and `TARGET_COLUMN` near the top for another CSV. The notebook reads from `../` and writes `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.joblib`.
+Change `DATASET_NAME` and `TARGET_COLUMN` near the top for another CSV. The notebook reads from `../data/raw/` and writes `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.joblib`.
 
 ## Completion checklist
 

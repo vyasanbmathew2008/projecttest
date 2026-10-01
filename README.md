@@ -1,20 +1,26 @@
-# Multimodal ML + GenAI Dataset Project
+# Medical ML + GenAI Dataset Project
 
-This project is organized as a reproducible **three-week workflow** for the four tabular medical CSV files in the repository root plus optional image inputs. Images are not committed because of size, licensing, and Kaggle access requirements.
+A reproducible three-week educational workflow for tabular medical datasets, baseline machine-learning models, evaluation, and a Streamlit demo. The project keeps raw data, notebooks, application code, documentation, and generated artifacts in separate locations.
 
-## Three-week plan
+> **Disclaimer:** This is an educational prototype, not a medical device or diagnostic system. Do not use its outputs as a diagnosis or substitute for qualified professional review.
 
-| Week | Notebook | Deliverable |
-|---|---|---|
-| 1 | [`notebooks/01_week1_dataset_initial_preprocessing.ipynb`](notebooks/01_week1_dataset_initial_preprocessing.ipynb) | Dataset inventory, schema/missingness/duplicate checks, initial plots, optional image inventory |
-| 2 | [`notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb`](notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb) | Leakage-safe preprocessing, baseline models, model comparison, serialized pipeline |
-| 3 | [`notebooks/03_week3_evaluation_deployment_genai.ipynb`](notebooks/03_week3_evaluation_deployment_genai.ipynb) | Test evaluation, error analysis, prediction contract, separate image branch, optional explanation layer |
+## Repository layout
 
-Per-notebook guides are in [`docs/`](docs/).
+```text
+.
+├── app/                  # Streamlit application
+│   └── streamlit_app.py
+├── data/
+│   ├── raw/              # Source CSV datasets
+│   └── images/           # Optional, ignored image inputs
+├── notebooks/            # Ordered analysis and modelling workflow
+├── docs/                 # Per-week notebook guides
+├── artifacts/            # Generated profiles, metrics, and model files
+├── requirements.txt
+└── README.md
+```
 
-## Streamlit app: clone and run
-
-The app is [`app.py`](app.py). It trains a model automatically from the CSV files, supports the four datasets, accepts structured numeric and categorical/text values, optionally accepts an image upload, and provides a downloadable JSON result.
+## Quick start
 
 ```bash
 git clone https://github.com/vyasanbmathew2008/projecttest.git
@@ -22,37 +28,31 @@ cd projecttest
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run app/streamlit_app.py
 ```
 
-The browser interface opens locally, normally at `http://localhost:8501`. No model download is required. The app caches the dataset and selected model during the session. If `OPENAI_API_KEY` is configured, the optional explanation section can use the configured OpenAI-compatible endpoint; without it, the app provides a deterministic safety-focused explanation.
+The app trains a model from the selected CSV in `data/raw/`, accepts structured inputs, keeps an optional uploaded image as a separate input, and provides a downloadable JSON result. If `OPENAI_API_KEY` is configured, the optional explanation section can use the configured OpenAI-compatible endpoint; otherwise it uses a deterministic fallback.
 
-The current serialized repository model is not required for the app to start: the app retrains from the selected CSV, which makes a fresh clone reproducible. The uploaded image is displayed and tracked as a separate input; it is not silently mixed into the tabular model. Add and validate a dedicated image model before connecting image predictions.
+## Analysis workflow
 
-## Dataset paths and image inputs
+Run JupyterLab from the repository root and execute the notebooks in order:
 
-Run JupyterLab or Streamlit from this repository root. The notebooks expect CSVs at `./*.csv`. Optional images can be extracted to `data/images/<label>/image.jpg`; the notebooks also detect `images/`, `Lung X-Ray Image/`, and `skin-disease-images/`. Folder names become candidate image labels.
+1. [Week 1 — dataset profiling](notebooks/01_week1_dataset_initial_preprocessing.ipynb) → profile artifacts
+2. [Week 2 — preprocessing and modelling](notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb) → model and comparison results
+3. [Week 3 — evaluation and deployment contract](notebooks/03_week3_evaluation_deployment_genai.ipynb) → evaluation metadata
 
-Kaggle sources from the original README:
+See the [notebook guides](docs/) for inputs, outputs, and completion checklists.
+
+## Data and reproducibility
+
+The committed CSVs are stored in `data/raw/`. Optional image datasets belong in `data/images/` and are intentionally ignored because of size, licensing, and access requirements. Do not commit credentials, personally identifiable information, or large raw image archives.
+
+The disease CSVs represent different tasks and should not be blindly concatenated. Select one dataset/target pair, document the choice, and treat categorical/text features and image pixels as separate pipeline branches.
+
+## Data sources
 
 - [Lung Disease X-Ray Dataset](https://www.kaggle.com/datasets/fatemehmehrparvar/lung-disease)
 - [20 Skin Diseases Dataset](https://www.kaggle.com/datasets/haroonalam16/20-skin-diseases-dataset)
 - [Skin Disease Dataset 2](https://www.kaggle.com/datasets/pacificrm/skindiseasedataset)
 
-Download only data you are permitted to use. Do not commit credentials, personally identifiable information, or large raw image archives.
-
-## Notebook quick start
-
-```bash
-jupyter lab
-```
-
-Run the notebooks in order. Week 1 writes a profile to `artifacts/`; Week 2 writes `artifacts/models/` and model results; Week 3 consumes that model and writes evaluation metadata.
-
-## Modelling boundary
-
-The CSVs describe different medical tasks and should not be blindly concatenated. Choose one dataset/target pair, document the choice, and treat categorical/text features and image pixels as separate pipeline branches. This is an educational prototype, not a medical device or diagnostic system.
-
-## Dependencies
-
-See [`requirements.txt`](requirements.txt). The project uses pandas, scikit-learn, matplotlib, seaborn, joblib, Pillow, Streamlit, JupyterLab, and an optional OpenAI-compatible client.
+Download only data you are permitted to use.

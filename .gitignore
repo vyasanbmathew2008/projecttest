@@ -1,9 +1,13 @@
-# Local environments and notebook runtime files
+# Virtual environments and Python caches
 .venv/
 __pycache__/
+*.py[cod]
 .ipynb_checkpoints/
 
-# Downloaded Kaggle images and generated model binaries
+# Local configuration and secrets
+.env
+
+# Downloaded image data and generated model binaries
 /data/images/
 /images/
 *.joblib

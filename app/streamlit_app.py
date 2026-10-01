@@ -21,9 +21,10 @@ try:
 except ImportError:
     Image = None
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / 'data' / 'raw'
 DATASETS = {
-    "Heart disease": ("heart_disease.csv", "Heart Disease Status"),
+    "Heart disease": ('heart_disease.csv', "Heart Disease Status"),
     "Lung disease": ("lung_disease_data.csv", "Recovered"),
     "Diabetes": ("diabetes_dataset.csv", "Target"),
     "Infectious disease": ("infectious_disease.csv", "Disease"),
@@ -41,7 +42,7 @@ def clean_columns(df: pd.DataFrame) -> pd.DataFrame:
 @st.cache_data(show_spinner=False)
 def load_dataset(dataset_label: str):
     filename, target = DATASETS[dataset_label]
-    path = ROOT / filename
+    path = DATA_DIR / filename
     if not path.exists():
         raise FileNotFoundError(f"Missing dataset: {path}")
     try:
@@ -187,7 +188,7 @@ with st.sidebar:
     st.header("Model settings")
     selected_dataset = st.selectbox("Dataset", list(DATASETS))
     st.markdown("**Run locally**")
-    st.code("streamlit run app.py", language="bash")
+    st.code("streamlit run app/streamlit_app.py", language="bash")
     st.caption("The app trains from the CSV files automatically. No external model download is required.")
 
 try:
