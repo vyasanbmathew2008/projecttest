@@ -13,7 +13,7 @@ This project uses one retained medical CSV dataset: the heart-disease dataset. T
 - Leakage-safe numeric and categorical preprocessing
 - Logistic regression and random forest baseline models
 - Balanced-accuracy, macro-F1, ROC-AUC, classification-report, and confusion-matrix evaluation
-- Saved complete scikit-learn model pipelines with Joblib
+- Saved complete scikit-learn model pipelines with pickle
 - Streamlit deployment interface for tabular CSV models
 - Prediction confidence and class-probability output
 - Optional safety-focused GenAI explanation layer
@@ -54,15 +54,15 @@ This phase builds the complete modelling pipeline:
 Local outputs (not committed):
 
 - `artifacts/week2_model_results.csv`
-- `artifacts/models/<dataset>_<model>.joblib`
+- `artifacts/models/<dataset>_<model>.pkl`
 
 ### Week 3 — Model Evaluation and Deployment with GenAI Implementation
 
-Week 3 deployment is implemented in [`app.py`](app.py), using the Joblib model exported by Week 2 and the Gemini API for optional explanations.
+Week 3 deployment is implemented in [`app.py`](app.py), using the pickle model exported by Week 2 and the Gemini API for optional explanations.
 
 This phase follows the deployment-oriented structure of the supplied README:
 
-- Load the Week 2 Joblib model pipeline
+- Load the Week 2 pickle model pipeline
 - Use the trained tabular model for prediction
 - Return predicted class, confidence, and class probabilities
 - Add an optional safety-focused Gemini explanation layer
@@ -92,7 +92,7 @@ Logistic Regression / Random Forest
 Model Evaluation
         │
         ▼
-Joblib Pipeline Artifact
+pickle Pipeline Artifact
         │
         ▼
 Streamlit Deployment
@@ -198,7 +198,7 @@ Do not include personal or sensitive medical information in prompts. If the serv
 - Python
 - Pandas and NumPy
 - Scikit-learn
-- Joblib
+- pickle
 - Matplotlib and Seaborn
 - JupyterLab
 - Streamlit

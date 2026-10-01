@@ -1,6 +1,7 @@
 from pathlib import Path
 import json
 import os
+import pickle
 import re
 
 import numpy as np
@@ -9,17 +10,9 @@ import streamlit as st
 from dotenv import load_dotenv
 from google import genai
 
-from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.impute import SimpleImputer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import balanced_accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / '.env')
 DATA_DIR = ROOT / 'data' / 'raw'
 DATASETS = {
@@ -51,68 +44,38 @@ def load_dataset(dataset_label: str):
     return df, target
 
 
-@st.cache_resource(show_spinner="Training model from the repository dataset...")
-def train_model(dataset_label: str):
+@st.cache_resource(show_spinner="Loading the Week 2 pickle model...")
+def load_model(dataset_label: str):
     df, target = load_dataset(dataset_label)
-    X = df.drop(columns=[target])
-    y = df[target].astype(str).str.strip()
-    if y.nunique() < 2:
-        raise ValueError("The selected dataset needs at least two target classes.")
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=42, stratify=y
-    )
-    numeric = X_train.select_dtypes(include=np.number).columns.tolist()
-    categorical = [col for col in X_train.columns if col not in numeric]
-    preprocessor = ColumnTransformer(
-        [
-            (
-                "numeric",
-                Pipeline(
-                    [
-                        ("imputer", SimpleImputer(strategy="median")),
-                        ("scaler", StandardScaler()),
-                    ]
-                ),
-                numeric,
-            ),
-            (
-                "categorical_text",
-                Pipeline(
-                    [
-                        ("imputer", SimpleImputer(strategy="most_frequent")),
-                        ("onehot", OneHotEncoder(handle_unknown="ignore")),
-                    ]
-                ),
-                categorical,
-            ),
-        ]
-    )
-    candidates = {
-        "Logistic regression": LogisticRegression(
-            max_iter=1500, class_weight="balanced", random_state=42
-        ),
-        "Random forest": RandomForestClassifier(
-            n_estimators=250,
-            class_weight="balanced",
-            n_jobs=-1,
-            random_state=42,
-        ),
-    }
+    dataset_stem = Path(DATASETS[dataset_label][0]).stem
+    model_dir = ROOT / "artifacts" / "models"
+    model_paths = sorted(model_dir.glob(f"{dataset_stem}_*.pkl"))
+    if not model_paths:
+        raise FileNotFoundError(
+            "No pickle model was found. Run the Week 2 notebook first so it creates "
+            f"{model_dir / (dataset_stem + '_<model>.pkl')}"
+        )
+    model_path = model_paths[-1]
+    with model_path.open("rb") as handle:
+        pipeline = pickle.load(handle)
+
     scores = {}
-    fitted = {}
-    for name, estimator in candidates.items():
-        pipeline = Pipeline([("preprocessor", preprocessor), ("model", estimator)])
-        pipeline.fit(X_train, y_train)
-        scores[name] = balanced_accuracy_score(y_test, pipeline.predict(X_test))
-        fitted[name] = pipeline
-    best_name = max(scores, key=scores.get)
+    results_path = ROOT / "artifacts" / "week2_model_results.csv"
+    if results_path.exists():
+        results = pd.read_csv(results_path)
+        if {"model", "balanced_accuracy"}.issubset(results.columns):
+            scores = {
+                str(row["model"]): float(row["balanced_accuracy"])
+                for _, row in results.iterrows()
+            }
     return {
-        "pipeline": fitted[best_name],
-        "model_name": best_name,
+        "pipeline": pipeline,
+        "model_name": model_path.stem.removeprefix(f"{dataset_stem}_").replace("_", " ").title(),
+        "model_path": model_path,
         "scores": scores,
-        "columns": X.columns.tolist(),
+        "columns": [column for column in df.columns if column != target],
         "target": target,
-        "classes": sorted(y.unique().tolist()),
+        "classes": sorted(df[target].astype(str).str.strip().unique().tolist()),
     }
 
 
@@ -178,12 +141,12 @@ with st.sidebar:
     selected_dataset = st.selectbox("Dataset", list(DATASETS))
     st.markdown("**Run locally**")
     st.code("streamlit run app.py", language="bash")
-    st.caption("The app trains from the CSV files automatically. No external model download is required.")
+    st.caption("The app loads the pickle model created by the Week 2 notebook.")
     st.caption(f"Gemini API: {'configured' if os.getenv('GEMINI_API_KEY') else 'not configured (using fallback)'}")
 
 try:
     df, target = load_dataset(selected_dataset)
-    model_info = train_model(selected_dataset)
+    model_info = load_model(selected_dataset)
 except Exception as exc:
     st.error(str(exc))
     st.stop()
@@ -193,6 +156,7 @@ with col_b:
     st.metric("Rows", f"{len(df):,}")
     st.metric("Features", f"{len(df.columns) - 1:,}")
     st.metric("Model", model_info["model_name"])
+    st.caption(f"Loaded: {model_info['model_path'].name}")
     st.write("Validation balanced accuracy")
     st.json({name: round(score, 4) for name, score in model_info["scores"].items()})
 
