@@ -12,4 +12,4 @@ Change `DATASET_NAME` and `TARGET_COLUMN` near the top for another CSV. The note
 
 ## Completion checklist
 
-Confirm the target is appropriate, review class imbalance, retain preprocessing and estimator together, and do not merge disease datasets without a justified target definition. The optional image block only verifies image availability; an image model must be validated separately.
+Confirm the target is appropriate, review class imbalance, retain preprocessing and estimator together, and do not merge disease datasets without a justified target definition.

@@ -7,7 +7,5 @@ __pycache__/
 # Local configuration and secrets
 .env
 
-# Downloaded image data and generated model binaries
-/data/images/
-/images/
+# Generated model binaries
 *.joblib

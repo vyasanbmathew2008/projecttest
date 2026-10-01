@@ -11,9 +11,8 @@ A reproducible three-week educational workflow for tabular medical datasets, bas
 ├── app/                  # Streamlit application
 │   └── streamlit_app.py
 ├── data/
-│   ├── raw/              # Source CSV datasets
-│   └── images/           # Optional, ignored image inputs
-├── notebooks/            # Ordered tabular and image workflows
+│   └── raw/              # Source CSV datasets
+├── notebooks/            # Ordered tabular workflows
 ├── docs/                 # Per-week notebook guides
 ├── artifacts/            # Generated profiles, metrics, and model files
 ├── requirements.txt
@@ -31,7 +30,7 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-The app trains a model from the selected CSV in `data/raw/`, accepts structured inputs, keeps an optional uploaded image as a separate input, and provides a downloadable JSON result. If `OPENAI_API_KEY` is configured, the optional explanation section can use the configured OpenAI-compatible endpoint; otherwise it uses a deterministic fallback.
+The app trains a model from the selected CSV in `data/raw/`, accepts structured tabular inputs, and provides a downloadable JSON result. If `OPENAI_API_KEY` is configured, the optional explanation section can use the configured OpenAI-compatible endpoint; otherwise it uses a deterministic fallback.
 
 ## Analysis workflow
 
@@ -43,30 +42,12 @@ Run JupyterLab from the repository root and execute the notebooks in order:
 
 See the [notebook guides](docs/) for inputs, outputs, and completion checklists.
 
-### Separate image pipeline
-
-The [skin disease + chest X-ray image pipeline](notebooks/04_separate_image_pipeline_skin_xray.ipynb) is separate from the tabular workflow. It trains one baseline model for the skin-disease dataset and another independent baseline model for the X-ray dataset. It expects image folders under `data/images/` and writes image models/results to `artifacts/models/` and `artifacts/image_pipeline_results.csv`.
-
-Expected layout:
-
-```text
-data/images/
-├── skin_disease/<class_name>/*.(jpg|jpeg|png|bmp|webp)
-└── xray/<class_name>/*.(jpg|jpeg|png|bmp|webp)
-```
-
-The notebook supports the original extracted folder names `skin-disease-images/` and `Lung X-Ray Image/` as alternatives.
-
 ## Data and reproducibility
 
-The committed CSVs are stored in `data/raw/`. Optional image datasets belong in `data/images/` and are intentionally ignored because of size, licensing, and access requirements. Do not commit credentials, personally identifiable information, or large raw image archives.
+The committed CSVs are stored in `data/raw/`. Do not commit credentials or personally identifiable information.
 
-The disease CSVs represent different tasks and should not be blindly concatenated. Select one dataset/target pair, document the choice, and treat categorical/text features and image pixels as separate pipeline branches.
+The disease CSVs represent different tasks and should not be blindly concatenated. Select one dataset/target pair, document the choice, and treat categorical/text features as part of the tabular pipeline.
 
 ## Data sources
 
-- [Lung Disease X-Ray Dataset](https://www.kaggle.com/datasets/fatemehmehrparvar/lung-disease)
-- [20 Skin Diseases Dataset](https://www.kaggle.com/datasets/haroonalam16/20-skin-diseases-dataset)
-- [Skin Disease Dataset 2](https://www.kaggle.com/datasets/pacificrm/skindiseasedataset)
-
-Download only data you are permitted to use. The two skin-disease links are alternative sources for the skin image branch; do not combine them without checking label definitions and avoiding duplicate images.
+The repository uses the committed tabular CSV datasets under `data/raw/`.

@@ -16,10 +16,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-try:
-    from PIL import Image
-except ImportError:
-    Image = None
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / 'data' / 'raw'
@@ -182,7 +178,7 @@ def explain_prediction(prediction: dict, text_context: str) -> str:
 
 
 st.title("Medical Dataset ML Prediction")
-st.write("A local Streamlit interface for the repository's trained tabular models. Text/categorical values are sent through the structured-data pipeline; uploaded images are kept as a separate input for future image-model integration.")
+st.write("A local Streamlit interface for the repository's trained tabular models. Text/categorical values are sent through the structured-data pipeline.")
 
 with st.sidebar:
     st.header("Model settings")
@@ -209,13 +205,9 @@ with col_b:
 with col_a:
     with st.form("prediction_form"):
         record = make_input_form(df, target)
-        st.subheader("Optional multimodal inputs")
         text_context = st.text_area(
             "Text context for the explanation layer (optional)",
             placeholder="Add non-identifying notes only. This text is not used as a model feature.",
-        )
-        image_upload = st.file_uploader(
-            "Upload an image (optional)", type=["png", "jpg", "jpeg", "bmp", "webp"]
         )
         submitted = st.form_submit_button("Predict")
 
@@ -228,7 +220,6 @@ if submitted:
         "prediction": str(label),
         "model": model_info["model_name"],
         "target": target,
-        "image_received": bool(image_upload),
     }
     if hasattr(pipeline, "predict_proba"):
         probabilities = pipeline.predict_proba(row)[0]
@@ -241,9 +232,6 @@ if submitted:
     st.subheader("Prediction")
     st.success(f"Predicted class: {result['prediction']}")
     st.json(result)
-    if image_upload and Image is not None:
-        st.image(Image.open(image_upload), caption="Uploaded image — separate input branch")
-        st.info("The current repository model is tabular. The image is displayed and recorded as an input, but is not mixed into the tabular prediction until a validated image model is added.")
     st.subheader("Explanation")
     st.write(explain_prediction(result, text_context))
     st.download_button(

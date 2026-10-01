@@ -4,7 +4,7 @@ Notebook: [`../notebooks/03_week3_evaluation_deployment_genai.ipynb`](../noteboo
 
 ## Purpose
 
-This notebook loads the Week 2 artifact, evaluates it on an untouched stratified test split, reports balanced accuracy/macro-F1/ROC-AUC where applicable, plots a confusion matrix, inspects errors, and defines `predict_record()` as a deployment contract. `multimodal_predict()` accepts an optional image path without mixing image bytes into the tabular pipeline.
+This notebook loads the Week 2 artifact, evaluates it on an untouched stratified test split, reports balanced accuracy/macro-F1/ROC-AUC where applicable, plots a confusion matrix, inspects errors, and defines `predict_record()` as a deployment contract.
 
 ## GenAI layer
 
