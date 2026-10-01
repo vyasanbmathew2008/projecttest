@@ -187,7 +187,7 @@ The application:
 
 ## GenAI implementation
 
-The Week 3 notebook and Streamlit app use the Gemini API only when `GEMINI_API_KEY` is available. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
+The Week 3 notebook and Streamlit app use the Gemini API only when `GEMINI_API_KEY` is available. The implementation imports the SDK with `from google import genai` and calls `genai.Client(...).models.generate_content(...)`. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
 
 Create a local `.env` file from [`.env.example`](.env.example). The application loads this file automatically. The `.env` file is ignored by Git and must never be committed.
 

@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
+from google import genai
 
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -150,8 +151,6 @@ def explain_prediction(prediction: dict, text_context: str) -> str:
     if not api_key:
         return fallback
     try:
-        from google import genai
-
         client = genai.Client(api_key=api_key)
         request = {
             "prediction": prediction,
@@ -180,6 +179,7 @@ with st.sidebar:
     st.markdown("**Run locally**")
     st.code("streamlit run app/streamlit_app.py", language="bash")
     st.caption("The app trains from the CSV files automatically. No external model download is required.")
+    st.caption(f"Gemini API: {'configured' if os.getenv('GEMINI_API_KEY') else 'not configured (using fallback)'}")
 
 try:
     df, target = load_dataset(selected_dataset)
