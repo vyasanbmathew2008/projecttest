@@ -9,3 +9,6 @@ __pycache__/
 
 # Generated model binaries
 *.joblib
+
+# Locally generated notebook and model artifacts
+/artifacts/

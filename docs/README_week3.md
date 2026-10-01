@@ -18,7 +18,7 @@ Week 3 completes the machine-learning workflow by evaluating the frozen Week 2 m
 - Define `predict_record()` for deployment
 - Return prediction confidence and class probabilities
 - Save evaluation metadata as JSON
-- Generate a cautious optional explanation with an OpenAI-compatible client
+- Generate a cautious optional explanation with the Gemini API
 - Use a deterministic fallback when no API key is configured
 
 ## Evaluation pipeline
@@ -56,7 +56,7 @@ The contract is demonstrated in the notebook and is implemented in the Streamlit
 
 ## GenAI implementation
 
-`generate_explanation()` is optional and runs through an OpenAI-compatible endpoint only when `OPENAI_API_KEY` is set. The prompt is restricted to prediction metadata and field names. Its instructions are to:
+`generate_explanation()` is optional and runs through the Gemini API only when `GEMINI_API_KEY` is set. The prompt is restricted to prediction metadata and field names. Its instructions are to:
 
 - Explain cautiously
 - State uncertainty

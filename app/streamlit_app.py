@@ -144,32 +144,27 @@ def explain_prediction(prediction: dict, text_context: str) -> str:
         f"Confidence: {prediction.get('confidence', 'not available')}\n\n"
         "This is a machine-learning output, not a diagnosis. Review the input and consult a qualified professional."
     )
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return fallback
     try:
-        from openai import OpenAI
+        from google import genai
 
-        client = OpenAI(api_key=api_key, base_url=os.getenv("OPENAI_API_BASE"))
+        client = genai.Client(api_key=api_key)
         request = {
             "prediction": prediction,
             "user_context": text_context[:2000],
         }
-        response = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-            temperature=0.1,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Explain an ML prediction cautiously. Do not diagnose, invent facts, or recommend treatment. State uncertainty and require human review.",
-                },
-                {
-                    "role": "user",
-                    "content": "Explain this prediction using only the supplied metadata: " + json.dumps(request, default=str),
-                },
-            ],
+        prompt = (
+            "Explain this tabular ML prediction cautiously using only the supplied metadata. "
+            "Do not diagnose, invent facts, or recommend treatment. State uncertainty and require human review.\n\n"
+            + json.dumps(request, default=str)
         )
-        return response.choices[0].message.content
+        response = client.models.generate_content(
+            model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash"),
+            contents=prompt,
+        )
+        return response.text
     except Exception as exc:
         return fallback + f"\n\nExplanation service unavailable: {type(exc).__name__}."
 

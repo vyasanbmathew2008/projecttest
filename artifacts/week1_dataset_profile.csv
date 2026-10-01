@@ -1,2 +1,0 @@
-dataset,rows,columns,duplicates,missing_cells,missing_%,numeric_columns,categorical_text_columns
-heart_disease,10000,21,0,3054,1.45,9,12

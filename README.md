@@ -35,7 +35,7 @@ This phase establishes the data contract for the CSV datasets:
 - Numeric distributions and initial plots
 - Selection of one supervised target for modelling
 
-Output: `artifacts/week1_dataset_profile.csv`
+Local output (not committed): `artifacts/week1_dataset_profile.csv`
 
 ### Week 2 — Complete Preprocessing & ML Modelling
 
@@ -51,7 +51,7 @@ This phase builds the complete modelling pipeline:
 - Balanced-accuracy comparison
 - Serialization of the best complete pipeline
 
-Outputs:
+Local outputs (not committed):
 
 - `artifacts/week2_model_results.csv`
 - `artifacts/models/<dataset>_<model>.joblib`
@@ -73,7 +73,7 @@ This phase follows the deployment-oriented structure of the supplied README:
 - Fall back to a deterministic explanation when no API key is available
 - Deploy the tabular model through Streamlit
 
-Output: `artifacts/week3_evaluation.json`
+Local output (not committed): `artifacts/week3_evaluation.json`
 
 ## Model pipeline
 
@@ -121,7 +121,6 @@ Prediction + Optional GenAI Explanation
 │   ├── README_week1.md
 │   ├── README_week2.md
 │   └── README_week3.md
-├── artifacts/                  # Profiles, metrics, and model files
 ├── requirements.txt
 └── README.md
 ```
@@ -179,7 +178,7 @@ The application:
 - Accepts numeric and categorical inputs
 - Shows a prediction and class probabilities
 - Provides an optional explanation text field
-- Uses the GenAI explanation layer only when `OPENAI_API_KEY` is configured
+- Uses the GenAI explanation layer only when `GEMINI_API_KEY` is configured
 - Provides a deterministic safety-focused explanation otherwise
 - Allows the prediction result to be downloaded as JSON
 
@@ -187,14 +186,13 @@ The application:
 
 ## GenAI implementation
 
-The Week 3 notebook and Streamlit app use an OpenAI-compatible client only when `OPENAI_API_KEY` is available. The explanation layer receives prediction metadata and limited user context, and is instructed not to diagnose, invent facts, or recommend treatment.
+The Week 3 notebook and Streamlit app use the Gemini API only when `GEMINI_API_KEY` is available. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
 
 Optional environment variables are documented in [`.env.example`](.env.example):
 
 ```bash
-export OPENAI_API_KEY="your-key"
-export OPENAI_API_BASE="your-compatible-endpoint"
-export OPENAI_MODEL="gpt-4o-mini"
+export GEMINI_API_KEY="your-key"
+export GEMINI_MODEL="gemini-2.0-flash"
 ```
 
 Do not include personal or sensitive medical information in prompts. If the service is unavailable, the application uses a deterministic fallback explanation.
@@ -208,7 +206,7 @@ Do not include personal or sensitive medical information in prompts. If the serv
 - Matplotlib and Seaborn
 - JupyterLab
 - Streamlit
-- Optional OpenAI-compatible client for GenAI explanations
+- Optional Gemini API for GenAI explanations
 
 ## Educational disclaimer
 
