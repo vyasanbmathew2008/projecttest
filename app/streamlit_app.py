@@ -6,6 +6,7 @@ import re
 import numpy as np
 import pandas as pd
 import streamlit as st
+from dotenv import load_dotenv
 
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -18,6 +19,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
 ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT / '.env')
 DATA_DIR = ROOT / 'data' / 'raw'
 DATASETS = {
     "Heart disease": ("heart_disease.csv", "Heart Disease Status"),

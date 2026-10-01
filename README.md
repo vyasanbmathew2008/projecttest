@@ -148,6 +148,7 @@ cd projecttest
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
 ```
 
 ## Run the notebooks
@@ -188,11 +189,13 @@ The application:
 
 The Week 3 notebook and Streamlit app use the Gemini API only when `GEMINI_API_KEY` is available. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
 
-Optional environment variables are documented in [`.env.example`](.env.example):
+Create a local `.env` file from [`.env.example`](.env.example). The application loads this file automatically. The `.env` file is ignored by Git and must never be committed.
 
-```bash
-export GEMINI_API_KEY="your-key"
-export GEMINI_MODEL="gemini-2.0-flash"
+Optional Gemini settings are:
+
+```dotenv
+GEMINI_API_KEY=your-key
+GEMINI_MODEL=gemini-2.0-flash
 ```
 
 Do not include personal or sensitive medical information in prompts. If the service is unavailable, the application uses a deterministic fallback explanation.
