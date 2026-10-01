@@ -52,7 +52,7 @@ Deployment Prediction Contract
 - Prediction confidence when available
 - Class probabilities when available
 
-The contract is demonstrated in the notebook and is implemented in the Streamlit application at [`../app/streamlit_app.py`](../app/streamlit_app.py).
+The contract is demonstrated in the notebook and is implemented in the Streamlit application at [`../app.py`](../app.py).
 
 ## GenAI implementation
 
@@ -88,7 +88,7 @@ Evaluation output:
 From the repository root:
 
 ```bash
-streamlit run app/streamlit_app.py
+streamlit run app.py
 ```
 
 The Streamlit application allows the user to select a supported CSV dataset, enter structured numeric and categorical values, view a prediction and probabilities, read the optional explanation, and download the result JSON.

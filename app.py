@@ -177,7 +177,7 @@ with st.sidebar:
     st.header("Model settings")
     selected_dataset = st.selectbox("Dataset", list(DATASETS))
     st.markdown("**Run locally**")
-    st.code("streamlit run app/streamlit_app.py", language="bash")
+    st.code("streamlit run app.py", language="bash")
     st.caption("The app trains from the CSV files automatically. No external model download is required.")
     st.caption(f"Gemini API: {'configured' if os.getenv('GEMINI_API_KEY') else 'not configured (using fallback)'}")
 

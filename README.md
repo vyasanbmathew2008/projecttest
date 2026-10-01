@@ -109,8 +109,7 @@ Prediction + Optional GenAI Explanation
 
 ```text
 .
-├── app/
-│   └── streamlit_app.py        # Streamlit deployment application
+├── app.py                       # Streamlit deployment application
 ├── data/
 │   └── raw/                    # Tabular CSV datasets
 ├── notebooks/
@@ -168,7 +167,7 @@ Run the notebooks in order:
 ## Run the Streamlit deployment
 
 ```bash
-streamlit run app/streamlit_app.py
+streamlit run app.py
 ```
 
 The application:
@@ -183,7 +182,7 @@ The application:
 - Provides a deterministic safety-focused explanation otherwise
 - Allows the prediction result to be downloaded as JSON
 
-> Run the Streamlit file with `streamlit run app/streamlit_app.py`, not `python app/streamlit_app.py`.
+> Run the Streamlit file with `streamlit run app.py`, not `python app.py`.
 
 ## GenAI implementation
 
