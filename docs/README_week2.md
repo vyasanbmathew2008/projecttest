@@ -8,8 +8,8 @@ The default task is `heart_disease.csv` with target `Heart Disease Status`. The 
 
 ## Inputs and outputs
 
-Change `DATASET_NAME` and `TARGET_COLUMN` near the top for another CSV. The notebook reads from `../data/raw/` and writes `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.joblib`.
+The notebook is configured for `heart_disease.csv` and `Heart Disease Status`. The notebook reads from `../data/raw/` and writes the local, ignored outputs `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.joblib`.
 
 ## Completion checklist
 
-Confirm the target is appropriate, review class imbalance, retain preprocessing and estimator together, and do not merge disease datasets without a justified target definition.
+Confirm the target is appropriate, review class imbalance, retain preprocessing and estimator together, verify the Joblib export, and do not merge unrelated disease targets.

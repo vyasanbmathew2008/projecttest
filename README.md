@@ -2,7 +2,7 @@
 
 > A three-week educational machine-learning workflow for dataset preparation, complete preprocessing, ML modelling, model evaluation, deployment, and GenAI implementation using tabular CSV datasets.
 
-This project uses one retained medical CSV dataset: the heart-disease dataset. The Week 1–3 workflow is configured specifically for this dataset.
+This project uses one retained medical CSV dataset: the heart-disease dataset. The Week 1–3 workflow is configured specifically for this dataset. Week 3 deployment is implemented in `app.py`, not as a separate notebook.
 
 > **Important:** This is an educational prototype, not a medical device or diagnostic system. Predictions must not be used as a diagnosis or substitute for qualified professional review.
 
@@ -58,22 +58,18 @@ Local outputs (not committed):
 
 ### Week 3 — Model Evaluation and Deployment with GenAI Implementation
 
-Notebook: [`notebooks/03_week3_evaluation_deployment_genai.ipynb`](notebooks/03_week3_evaluation_deployment_genai.ipynb)
+Week 3 deployment is implemented in [`app.py`](app.py), using the Joblib model exported by Week 2 and the Gemini API for optional explanations.
 
 This phase follows the deployment-oriented structure of the supplied README:
 
-- Load the frozen Week 2 model
-- Evaluate it on an untouched stratified test split
-- Generate a classification report and confusion matrix
-- Review false positives and false negatives
-- Define a reusable `predict_record()` prediction contract
+- Load the Week 2 Joblib model pipeline
+- Use the trained tabular model for prediction
 - Return predicted class, confidence, and class probabilities
-- Save evaluation metadata
-- Add an optional safety-focused GenAI explanation layer
+- Add an optional safety-focused Gemini explanation layer
 - Fall back to a deterministic explanation when no API key is available
 - Deploy the tabular model through Streamlit
 
-Local output (not committed): `artifacts/week3_evaluation.json`
+The app reads the local Week 2 model artifact from `artifacts/models/` after Week 2 has been run.
 
 ## Model pipeline
 
@@ -114,12 +110,10 @@ Prediction + Optional GenAI Explanation
 │   └── raw/                    # Tabular CSV datasets
 ├── notebooks/
 │   ├── 01_week1_dataset_initial_preprocessing.ipynb
-│   ├── 02_week2_complete_preprocessing_ml_modelling.ipynb
-│   └── 03_week3_evaluation_deployment_genai.ipynb
+│   └── 02_week2_complete_preprocessing_ml_modelling.ipynb
 ├── docs/
 │   ├── README_week1.md
-│   ├── README_week2.md
-│   └── README_week3.md
+│   └── README_week2.md
 ├── requirements.txt
 └── README.md
 ```
@@ -162,7 +156,7 @@ Run the notebooks in order:
 
 1. Week 1 — profile the CSV datasets.
 2. Week 2 — train and save the best model pipeline.
-3. Week 3 — evaluate the saved model and test the deployment contract.
+3. Week 3 — run `app.py` to deploy the saved model with optional Gemini explanations.
 
 ## Run the Streamlit deployment
 
@@ -186,7 +180,7 @@ The application:
 
 ## GenAI implementation
 
-The Week 3 notebook and Streamlit app use the Gemini API only when `GEMINI_API_KEY` is available. The implementation imports the SDK with `from google import genai` and calls `genai.Client(...).models.generate_content(...)`. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
+The Streamlit app uses the Gemini API only when `GEMINI_API_KEY` is available. The implementation imports the SDK with `from google import genai` and calls `genai.Client(...).models.generate_content(...)`. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
 
 Create a local `.env` file from [`.env.example`](.env.example). The application loads this file automatically. The `.env` file is ignored by Git and must never be committed.
 
