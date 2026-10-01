@@ -2,7 +2,7 @@
 
 > A three-week educational machine-learning workflow for dataset preparation, complete preprocessing, ML modelling, model evaluation, deployment, and GenAI implementation using tabular CSV datasets.
 
-This project uses four medical CSV datasets. Each dataset represents a different prediction task, so models are trained and evaluated **one dataset at a time** rather than blindly combining unrelated targets.
+This project uses one retained medical CSV dataset: the heart-disease dataset. The Week 1–3 workflow is configured specifically for this dataset.
 
 > **Important:** This is an educational prototype, not a medical device or diagnostic system. Predictions must not be used as a diagnosis or substitute for qualified professional review.
 
@@ -131,9 +131,6 @@ Prediction + Optional GenAI Explanation
 The committed tabular CSV files are stored in `data/raw/`:
 
 - `heart_disease.csv`
-- `lung_disease_data.csv`
-- `diabetes_dataset.csv`
-- `infectious_disease.csv`
 
 The current default Week 2 and Week 3 task is:
 
@@ -142,7 +139,7 @@ Dataset: heart_disease.csv
 Target:  Heart Disease Status
 ```
 
-To use another CSV, update `DATASET_NAME` and `TARGET_COLUMN` in the Week 2 and Week 3 notebooks, and update the dataset mapping in `app/streamlit_app.py` if required.
+The notebooks and Streamlit application are configured for `heart_disease.csv` with target `Heart Disease Status`.
 
 ## Installation
 

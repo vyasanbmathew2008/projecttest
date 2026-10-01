@@ -8,7 +8,7 @@ This notebook establishes the data contract before modelling. It discovers the C
 
 ## Inputs and outputs
 
-Inputs are `../data/raw/diabetes_dataset.csv`, `../data/raw/heart_disease.csv`, `../data/raw/infectious_disease.csv`, `../data/raw/lung_disease_data.csv`. Outputs are `../artifacts/week1_dataset_profile.csv`.
+Input is `../data/raw/heart_disease.csv`. Output is `../artifacts/week1_dataset_profile.csv`.
 
 ## Completion checklist
 

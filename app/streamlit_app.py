@@ -20,10 +20,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / 'data' / 'raw'
 DATASETS = {
-    "Heart disease": ('heart_disease.csv', "Heart Disease Status"),
-    "Lung disease": ("lung_disease_data.csv", "Recovered"),
-    "Diabetes": ("diabetes_dataset.csv", "Target"),
-    "Infectious disease": ("infectious_disease.csv", "Disease"),
+    "Heart disease": ("heart_disease.csv", "Heart Disease Status"),
 }
 
 st.set_page_config(page_title="Medical ML Prediction", page_icon="", layout="wide")
