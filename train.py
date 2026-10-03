@@ -32,7 +32,7 @@ DEFAULT_MODEL_DIR = ROOT / "models"
 DEFAULT_PROCESSED_DIR = ROOT / "data" / "processed"
 RANDOM_STATE = 42
 EXCLUDED_FEATURE_COLUMNS = {"recovered"}
-LUNG_EXCLUDED_FEATURE_COLUMNS = {"treatment type"}
+LUNG_EXCLUDED_FEATURE_COLUMNS = {"treatment type", "smoking", "smoking status", "yellow fingers", "anxiety", "peer pressure", "alcohol consuming", "swallowing difficulty"}
 
 DATASET_CONFIG = {
     "heart_disease": {
