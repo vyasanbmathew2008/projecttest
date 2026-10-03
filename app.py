@@ -25,7 +25,6 @@ GEMINI_MODELS = [
 MODELS = {
     "Heart disease": "heart_disease",
     "Diabetes": "diabetes_dataset",
-    "Lung disease": "lung_disease_data",
     "Infectious disease / symptoms": "health_dataset",
 }
 
@@ -164,7 +163,7 @@ st.info(
 
 with st.sidebar:
     st.header("Prediction settings")
-    selected_dataset = st.selectbox("Health area", list(MODELS), index=list(MODELS).index("Lung disease"))
+    selected_dataset = st.selectbox("Health area", list(MODELS), index=0)
     st.divider()
     configured_model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
     if configured_model not in GEMINI_MODELS:
