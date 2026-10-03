@@ -1,83 +1,107 @@
-# Medical Tabular ML + GenAI Project
+# Medical AI Predictor — ML + GenAI
 
-> A three-week educational machine-learning workflow for dataset preparation, complete preprocessing, ML modelling, model evaluation, deployment, and GenAI implementation using tabular CSV datasets.
+> An educational healthcare AI project that combines tabular machine-learning disease prediction with a Gemini-powered, patient-friendly explanation layer.
 
-This project uses four independent medical CSV datasets. Each dataset has its own target, preprocessing pipeline, and pickle model. The Week 3 deployment is implemented in `app.py`, not as a separate notebook.
+This project uses four medical CSV datasets. Each dataset is cleaned and preprocessed with a leakage-safe scikit-learn pipeline, trained using baseline ML models, evaluated, and exported as a pickle model. The Streamlit application loads these saved models and provides an easy-to-use prediction interface with optional Gemini explanations.
 
-> **Important:** This is an educational prototype, not a medical device or diagnostic system. Predictions must not be used as a diagnosis or substitute for qualified professional review.
+> **Important:** This is an educational prototype, not a medical device or diagnostic system. Predictions can be incorrect and must not be used as a diagnosis or substitute for qualified professional medical advice.
 
 ## Project features
 
-- Dataset profiling and initial data preprocessing for all four CSV datasets
-- Missing-value, duplicate, schema, and data-type analysis
-- Leakage-safe numeric and categorical preprocessing
-- Logistic regression and random forest baseline models
-- Balanced-accuracy, macro-F1, ROC-AUC, classification-report, and confusion-matrix evaluation
-- Saved complete scikit-learn model pipelines with pickle
-- Streamlit deployment interface for tabular CSV models
-- Prediction confidence and class-probability output
-- Optional safety-focused GenAI explanation layer
-- Deterministic fallback explanation when no GenAI API key is configured
+- Four medical tabular datasets with a standardized target name: `Disease`
+- Dataset profiling and preprocessing
+- Missing-value and duplicate handling
+- Numeric and categorical preprocessing
+- Logistic regression and random forest model comparison
+- Balanced-accuracy and other classification metrics during training
+- Complete scikit-learn pipeline serialization with pickle
+- Saved models stored in a single `models/` directory
+- Streamlit prediction interface
+- Prediction confidence and class-probability overview
+- Gemini-powered patient-friendly explanation
+- Practical guidance about what to do next
+- Emergency warning signs for relevant predicted conditions
+- Deterministic fallback explanation when Gemini is unavailable
+- Gemini model selector with `gemini-3.5-flash-lite` as the default configured model
 
-## Three-week workflow
+## Supported datasets
+
+| Dataset | Model file | Standard target |
+|---|---|---|
+| Heart disease | `models/heart_disease.pkl` | `Disease` |
+| Diabetes | `models/diabetes_dataset.pkl` | `Disease` |
+| Lung disease | `models/lung_disease_data.pkl` | `Disease` |
+| Infectious disease / symptoms | `models/health_dataset.pkl` | `Disease` |
+
+The training code accepts the original target-column names used by the datasets and standardizes them internally to `Disease`.
+
+For the heart-disease dataset, the original yes/no target values are also normalized to human-readable labels such as `Heart Disease` and `No Heart Disease`.
+
+## Workflow
 
 ### Week 1 — Dataset & Initial Data Preprocessing
 
 Notebook: [`notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb`](notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 
-This phase establishes the data contract for the CSV datasets:
+This phase covers:
 
-- Dataset dimensions and column inventory
+- Dataset dimensions and column inspection
 - Column-name normalization
-- Data types and categorical-value inspection
-- Missing-cell analysis
+- Data-type and categorical-value inspection
+- Missing-value analysis
 - Duplicate-row analysis
-- Numeric distributions and initial plots
-- Selection of one supervised target for modelling
-
-Local output (not committed): `artifacts/week1_dataset_profile.csv`
+- Numeric distributions and initial visualization
+- Selection and standardization of the supervised target
 
 ### Week 2 — Complete Preprocessing & ML Modelling
 
-Notebook: [`notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb`](notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
+The notebook and `train.py` build the complete modelling pipeline:
 
-This phase builds the complete modelling pipeline:
-
-- Stratified train/test split
-- Numeric imputation and standardization
-- Categorical/text imputation and one-hot encoding
+- Train/test splitting
+- Numeric imputation and scaling
+- Categorical/text imputation and encoding
 - Logistic regression baseline
 - Random forest baseline
-- Balanced-accuracy comparison
-- Serialization of the best complete pipeline, feature schema, and model metadata into one pickle bundle
+- Model evaluation
+- Selection of the better-performing baseline
+- Serialization of the complete pipeline and metadata into a pickle bundle
 
-Local outputs (not committed):
+Generated model files are stored directly in:
 
-- `artifacts/week2_model_results.csv`
-- `artifacts/models/<dataset>.pkl` (one pickle bundle per dataset)
+```text
+models/
+├── heart_disease.pkl
+├── diabetes_dataset.pkl
+├── lung_disease_data.pkl
+└── health_dataset.pkl
+```
 
-### Week 3 — Model Evaluation and Deployment with GenAI Implementation
+### Week 3 — Streamlit Deployment + GenAI
 
-Week 3 deployment is implemented in [`app.py`](app.py), using the pickle model exported by Week 2 and the Gemini API for optional explanations.
+Week 3 is implemented in [`app.py`](app.py).
 
-This phase follows the deployment-oriented structure of the supplied README:
+The application:
 
-- Load the Week 2 pickle model pipeline
-- Use the trained tabular model for prediction
-- Return predicted class, confidence, and class probabilities
-- Add an optional safety-focused Gemini explanation layer
-- Fall back to a deterministic explanation when no API key is available
-- Deploy the tabular model through Streamlit
+1. Loads a saved pickle model from `models/`
+2. Collects the required user information
+3. Generates an AI-assisted disease prediction
+4. Displays confidence and class probabilities when available
+5. Sends the prediction and optional non-identifying context to Gemini
+6. Displays a patient-friendly explanation and practical next steps
+7. Shows relevant emergency warning signs
 
-The app reads the local Week 2 model artifact from `artifacts/models/` after Week 2 has been run.
+The application does **not** display internal model implementation details such as the algorithm name, pickle filename, dataset metadata, or backend configuration.
 
 ## Model pipeline
 
 ```text
-Tabular CSV Dataset
+Medical CSV Dataset
         │
         ▼
-Initial Data Profiling
+Data Profiling & Cleaning
+        │
+        ▼
+Target Standardization → Disease
         │
         ▼
 Train/Test Split
@@ -92,13 +116,13 @@ Logistic Regression / Random Forest
 Model Evaluation
         │
         ▼
-pickle Pipeline Artifact
+Saved Pickle Model
         │
         ▼
-Streamlit Deployment
+Streamlit Prediction
         │
         ▼
-Prediction + Optional GenAI Explanation
+Gemini Patient-Friendly Explanation
 ```
 
 ## Repository structure
@@ -106,9 +130,10 @@ Prediction + Optional GenAI Explanation
 ```text
 .
 ├── app.py                       # Streamlit deployment application
-├── train.py                     # Local cleaning, training, and pickle export
+├── train.py                     # Local preprocessing, training, and model export
+├── models/                      # Generated pickle models
 ├── data/
-│   └── raw/                    # Tabular CSV datasets
+│   └── raw/                     # Raw tabular CSV datasets
 ├── notebooks/
 │   └── 01_02_week1_week2_preprocessing_ml_modelling.ipynb
 ├── docs/
@@ -116,62 +141,54 @@ Prediction + Optional GenAI Explanation
 │   ├── README_week2.md
 │   └── README_week3.md
 ├── requirements.txt
+├── .env.example
 └── README.md
 ```
-
-## Datasets
-
-The committed tabular CSV files are stored in `data/raw/`:
-
-- `heart_disease.csv`
-
-The four dataset targets are:
-
-| Dataset | Target |
-|---|---|
-| `heart_disease.csv` | `Heart Disease Status` |
-| `diabetes_dataset.csv` | `Target` |
-| `lung_disease_data.csv` | `Disease Type` |
-| `health_dataset.csv` | `Disease` |
-
-The Week 2 notebook generates one `.pkl` bundle per dataset. `app.py` lets you select a disease and loads the matching bundle. The generated bundles are ignored by Git so you can manually add them when desired.
 
 ## Installation
 
 ```bash
 git clone https://github.com/vyasanbmathew2008/projecttest.git
 cd projecttest
+
 python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
 ```
 
-## Open notebooks in Google Colab
+### Activate the virtual environment
 
-The notebooks automatically download the four CSV datasets from the public GitHub raw-data links when the files are not available locally.
+Linux/macOS:
 
-- [Open Week 1 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
-- [Open Week 2 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
-- [Open the Colab guide](README_COLAB.md)
+```bash
+source .venv/bin/activate
+```
 
-Run all cells in the merged notebook to create the four `.pkl` files under `artifacts/models/`.
+Windows:
 
-## Train locally with `train.py`
+```powershell
+.venv\Scripts\activate
+```
 
-To run the complete cleaning, preprocessing, model comparison, and pickle export locally:
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Train the models locally
+
+Run:
 
 ```bash
 python train.py
 ```
 
-This trains all four datasets and creates:
+This processes all four datasets and creates:
 
 ```text
-artifacts/models/heart_disease.pkl
-artifacts/models/diabetes_dataset.pkl
-artifacts/models/lung_disease_data.pkl
-artifacts/models/health_dataset.pkl
+models/heart_disease.pkl
+models/diabetes_dataset.pkl
+models/lung_disease_data.pkl
+models/health_dataset.pkl
 ```
 
 To train only one dataset:
@@ -180,74 +197,101 @@ To train only one dataset:
 python train.py --dataset health_dataset
 ```
 
-After training, run the deployment app:
+The available dataset names are:
+
+```text
+heart_disease
+diabetes_dataset
+lung_disease_data
+health_dataset
+```
+
+You can also specify custom data and model directories:
+
+```bash
+python train.py --data-dir data/raw --model-dir models
+```
+
+## Run the Streamlit application
+
+After generating the pickle models:
 
 ```bash
 streamlit run app.py
 ```
 
-`train.py` is the local Python equivalent of the merged Week 1–2 notebook.
+The app allows you to:
 
-## Run the notebooks
+- Select a health area
+- Enter the required health information
+- Enter symptoms for the infectious-disease/symptom model
+- Add optional non-identifying context
+- Receive an AI-assisted prediction
+- View prediction confidence and class probabilities
+- Select a Gemini model
+- Get a plain-language explanation and next-step guidance
 
-Start JupyterLab from the repository root:
+> Run the application with `streamlit run app.py`, not `python app.py`.
 
-```bash
-jupyter lab
+## Gemini GenAI integration
+
+The app uses the Gemini API to generate the plain-language explanation after a prediction.
+
+The default configured model is:
+
+```text
+gemini-3.5-flash-lite
 ```
 
-Run the notebooks in order:
+The sidebar also provides a model selector and a custom model ID option.
 
-1. Week 1 — profile the CSV datasets.
-2. Week 2 — continue in the same merged notebook to train all four datasets and save one `.pkl` bundle per dataset.
-3. Week 3 — run `app.py`, select a disease, and deploy its saved `.pkl` model with optional Gemini explanations.
-
-## Run the Streamlit deployment
-
-```bash
-streamlit run app.py
-```
-
-The application:
-
-- Lets you select one of the supported CSV datasets
-- Trains a tabular model from the selected dataset
-- Displays validation balanced accuracy
-- Accepts numeric and categorical inputs
-- Shows a prediction and class probabilities
-- Provides an optional explanation text field
-- Uses the GenAI explanation layer only when `GEMINI_API_KEY` is configured
-- Provides a deterministic safety-focused explanation otherwise
-- Allows the prediction result to be downloaded as JSON
-
-> Run the Streamlit file with `streamlit run app.py`, not `python app.py`.
-
-## GenAI implementation
-
-The Streamlit app uses the Gemini API only when `GEMINI_API_KEY` is available. The implementation imports the SDK with `from google import genai` and calls `genai.Client(...).models.generate_content(...)`. The explanation layer sends prediction metadata and limited user context to Gemini, and is instructed not to diagnose, invent facts, or recommend treatment.
-
-Create a local `.env` file from [`.env.example`](.env.example). The application loads this file automatically. The `.env` file is ignored by Git and must never be committed.
-
-Optional Gemini settings are:
+Create a local `.env` file using [`.env.example`](.env.example):
 
 ```dotenv
 GEMINI_API_KEY=your-key
-GEMINI_MODEL=gemini-2.0-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 ```
 
-Do not include personal or sensitive medical information in prompts. If the service is unavailable, the application uses a deterministic fallback explanation.
+The `.env` file should remain local and must never be committed to Git.
+
+The Gemini prompt is designed to:
+
+- Explain the predicted condition in simple language
+- Describe reasonable next steps
+- Identify relevant emergency warning signs
+- Avoid claiming that the user definitely has the condition
+- Avoid prescribing medication or dosage
+- Avoid inventing patient-specific information
+- Avoid exposing internal ML implementation details
+
+If a Gemini API key is not configured or the Gemini service is unavailable, the application uses a deterministic fallback explanation.
+
+> Do not enter personal or sensitive medical information into the optional context field.
+
+## Google Colab
+
+The Week 1–2 notebook can be opened in Google Colab:
+
+- [Open the notebook in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
+- [Open the Colab guide](README_COLAB.md)
+
+Run the notebook cells to perform the preprocessing, modelling, evaluation, and model export workflow.
 
 ## Technology stack
 
 - Python
-- Pandas and NumPy
+- Pandas
+- NumPy
 - Scikit-learn
-- pickle
-- Matplotlib and Seaborn
-- JupyterLab
+- Pickle
+- Matplotlib
+- Seaborn
+- Jupyter / Google Colab
 - Streamlit
-- Optional Gemini API for GenAI explanations
+- Google Gemini API
 
 ## Educational disclaimer
 
-The datasets, models, metrics, and explanations in this repository are for learning and experimentation. They have not been validated for clinical use, safety, fairness, or deployment in a healthcare setting.
+The datasets, models, metrics, predictions, and Gemini-generated explanations in this repository are for learning and experimentation.
+
+They have not been clinically validated for diagnosis, treatment, safety, fairness, or healthcare deployment. An AI prediction may be wrong. Anyone with symptoms or health concerns should seek advice from a qualified healthcare professional.
