@@ -32,7 +32,6 @@ DEFAULT_MODEL_DIR = ROOT / "models"
 DEFAULT_PROCESSED_DIR = ROOT / "data" / "processed"
 RANDOM_STATE = 42
 EXCLUDED_FEATURE_COLUMNS = {"recovered"}
-LUNG_EXCLUDED_FEATURE_COLUMNS = {"treatment type", "smoking", "smoking status", "yellow fingers", "anxiety", "peer pressure", "alcohol consuming", "swallowing difficulty"}
 
 DATASET_CONFIG = {
     "heart_disease": {
@@ -42,11 +41,6 @@ DATASET_CONFIG = {
     "diabetes_dataset": {
         "file": "diabetes_dataset.csv",
         "target_aliases": ["Disease", "Target"],
-    },
-    "lung_disease_data": {
-        "file": "lung_disease_data.csv",
-        "target_aliases": ["Disease", "Disease Type"],
-        "merge_files": ["lung_cancer.csv"],
     },
     "health_dataset": {
         "file": "health_dataset.csv",
@@ -118,66 +112,6 @@ def build_feature_schema(X: pd.DataFrame, numeric_columns: list[str]) -> dict:
 
 
 
-def prepare_lung_dataset(data_dir: Path, processed_dir: Path) -> pd.DataFrame:
-    """Prepare the lung-cancer dataset for binary lung-cancer prediction."""
-    cancer_path = data_dir / "lung_cancer.csv"
-    if not cancer_path.exists():
-        raise FileNotFoundError(f"Lung cancer dataset not found: {cancer_path}")
-
-    cancer = clean_table(read_table(cancer_path))
-    if "LUNG_CANCER" not in cancer.columns:
-        raise ValueError(
-            f"{cancer_path.name} must contain a LUNG_CANCER target column. "
-            f"Columns found: {list(cancer.columns)}"
-        )
-
-    cancer = cancer.rename(columns={"LUNG_CANCER": "Disease"})
-    cancer["Disease"] = (
-        cancer["Disease"].astype("string").str.strip().str.lower()
-        .map({
-            "yes": "Lung Cancer",
-            "no": "No Lung Cancer",
-            "1": "Lung Cancer",
-            "0": "No Lung Cancer",
-        })
-        .fillna(cancer["Disease"].astype("string").str.strip())
-    )
-
-    cancer = cancer.rename(columns={
-        "GENDER": "Gender",
-        "AGE": "Age",
-        "YELLOW_FINGERS": "Yellow Fingers",
-        "CHRONIC DISEASE": "Chronic Disease",
-        "FATIGUE ": "Fatigue",
-        "ALLERGY ": "Allergy",
-        "WHEEZING": "Wheezing",
-        "COUGHING": "Coughing",
-        "SHORTNESS OF BREATH": "Shortness of Breath",
-        "CHEST PAIN": "Chest Pain",
-    })
-
-    keep_columns = [
-        "Gender",
-        "Age",
-        "Yellow Fingers",
-        "Chronic Disease",
-        "Fatigue",
-        "Allergy",
-        "Wheezing",
-        "Coughing",
-        "Shortness of Breath",
-        "Chest Pain",
-        "Disease",
-    ]
-    cancer = cancer[[column for column in keep_columns if column in cancer.columns]]
-
-    processed_dir.mkdir(parents=True, exist_ok=True)
-    merged_path = processed_dir / "lung_merged_dataset.csv"
-    cancer.to_csv(merged_path, index=False)
-    print(f"Lung cancer dataset prepared: {len(cancer)} rows -> {merged_path}")
-    return cancer
-
-
 def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
     config = DATASET_CONFIG[dataset_name]
     source_path = data_dir / config["file"]
@@ -185,10 +119,7 @@ def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
         raise FileNotFoundError(f"Dataset not found: {source_path}")
 
     print(f"\n===== {dataset_name} =====")
-    if dataset_name == "lung_disease_data":
-        df = prepare_lung_dataset(data_dir, DEFAULT_PROCESSED_DIR)
-    else:
-        df = clean_table(read_table(source_path))
+    df = clean_table(read_table(source_path))
     target = next((column for column in config["target_aliases"] if column in df.columns), None)
     if target is None:
         raise ValueError(
@@ -220,9 +151,6 @@ def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
     # Exclude post-outcome columns from model inputs to prevent data leakage.
     # Column matching is case-insensitive, so Recovered / recovered / RECOVERED are all excluded.
     excluded_names = set(EXCLUDED_FEATURE_COLUMNS)
-    if dataset_name == "lung_disease_data":
-        excluded_names.update(LUNG_EXCLUDED_FEATURE_COLUMNS)
-        excluded_names.add("dataset source")
     excluded_columns = [
         column for column in df.columns
         if str(column).strip().lower() in excluded_names
