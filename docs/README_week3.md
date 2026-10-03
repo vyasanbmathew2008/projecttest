@@ -13,7 +13,7 @@ Build input form from pickle feature_schema
       ↓
 Predict with the stored preprocessing + model pipeline
       ↓
-Show class, confidence, probabilities, and optional Gemini explanation
+Show class, confidence, probabilities, and an optional short Gemini description
 ```
 
 ## Available disease models
@@ -37,4 +37,4 @@ streamlit run app.py
 
 ## Gemini explanation layer
 
-If `.env` contains `GEMINI_API_KEY`, the app sends limited prediction metadata to Gemini for a cautious explanation. Without a key, it uses a deterministic fallback. The explanation is educational and must not be treated as a diagnosis or treatment recommendation.
+For the infectious-disease option, users select symptoms, the health pickle model predicts a disease, and if `.env` contains `GEMINI_API_KEY`, the app sends limited prediction metadata to Gemini for a short two-sentence description. Without a key, it uses a deterministic fallback. The description is educational and must not be treated as a diagnosis or treatment recommendation.
