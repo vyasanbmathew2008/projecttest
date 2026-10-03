@@ -154,12 +154,24 @@ with st.sidebar:
     configured_model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
     if configured_model not in GEMINI_MODELS:
         configured_model = "gemini-2.0-flash"
-    gemini_model = st.selectbox(
+    gemini_choice = st.selectbox(
         "Gemini model",
-        GEMINI_MODELS,
-        index=GEMINI_MODELS.index(configured_model),
-        help="Choose which Gemini model generates the short prediction description.",
+        ["Default / configured", *GEMINI_MODELS, "Custom model ID"],
+        index=0,
+        help="Choose the Gemini model used for the short prediction description.",
     )
+    if gemini_choice == "Custom model ID":
+        gemini_model = st.text_input(
+            "Custom Gemini model ID",
+            value=configured_model,
+            placeholder="Example: gemini-2.5-flash",
+            help="Enter a model ID supported by your Gemini API account.",
+        ).strip() or configured_model
+    elif gemini_choice == "Default / configured":
+        gemini_model = configured_model
+    else:
+        gemini_model = gemini_choice
+    st.caption(f"Selected Gemini: {gemini_model}")
     st.caption(f"Gemini API: {'configured' if os.getenv('GEMINI_API_KEY') else 'not configured (using fallback)'}")
 
 try:
