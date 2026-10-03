@@ -35,7 +35,7 @@ st.set_page_config(page_title="Medical AI Predictor", page_icon="🩺", layout="
 @st.cache_resource(show_spinner="Loading the Week 2 pickle model...")
 def load_model(dataset_label: str):
     dataset_stem = MODELS[dataset_label]
-    model_dir = ROOT / "artifacts" / "models"
+    model_dir = ROOT / "models" / "models"
     model_path = model_dir / f"{dataset_stem}.pkl"
     if not model_path.exists():
         raise FileNotFoundError(
