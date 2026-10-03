@@ -132,6 +132,23 @@ def train_dataset(dataset_name: str, data_dir: Path, artifact_dir: Path) -> Path
         df = df.rename(columns={target: TARGET_COLUMN})
     target = TARGET_COLUMN
 
+    # Convert dataset-specific binary heart-disease labels into meaningful
+    # disease classes while keeping the common target column name "Disease".
+    if dataset_name == "heart_disease":
+        df[TARGET_COLUMN] = (
+            df[TARGET_COLUMN]
+            .astype("string")
+            .str.strip()
+            .str.lower()
+            .map({
+                "yes": "Heart Disease",
+                "no": "No Heart Disease",
+                "1": "Heart Disease",
+                "0": "No Heart Disease",
+            })
+            .fillna(df[TARGET_COLUMN].astype("string").str.strip())
+        )
+
     X = df.drop(columns=[target])
     y = df[target].astype("string").str.strip()
     valid_target = df[target].notna()
