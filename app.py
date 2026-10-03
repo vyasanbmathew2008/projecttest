@@ -27,7 +27,7 @@ MODELS = {
     "Infectious disease / symptoms": "health_dataset",
 }
 
-st.set_page_config(page_title="Medical ML Prediction", page_icon="", layout="wide")
+st.set_page_config(page_title="Medical AI Predictor", page_icon="🩺", layout="wide", initial_sidebar_state="expanded")
 
 
 @st.cache_resource(show_spinner="Loading the Week 2 pickle model...")
@@ -117,7 +117,7 @@ def make_input_form(model_info: dict):
 
 def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -> str:
     fallback = (
-        f"Predicted class: {prediction['prediction']}\n\n"
+        f"Predicted disease: {prediction['prediction']}\n\n"
         f"Confidence: {prediction.get('confidence', 'not available')}\n\n"
         "This is a machine-learning output, not a diagnosis. Review the input and consult a qualified professional."
     )
@@ -142,15 +142,17 @@ def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -
         return fallback + f"\n\nExplanation service unavailable: {type(exc).__name__}."
 
 
-st.title("Medical Dataset ML Prediction")
-st.write("Select a disease, enter structured values or symptoms, and let the matching pickle model calculate a prediction. Gemini can then provide a short description.")
+st.title("🩺 Medical AI Predictor")
+st.markdown("### AI-powered disease prediction")
+st.write("Choose a dataset, enter the required information, and get a model prediction with a simple Gemini explanation.")
 
 with st.sidebar:
     st.header("Model settings")
     selected_dataset = st.selectbox("Dataset", list(MODELS))
     st.markdown("**Run locally**")
     st.code("streamlit run app.py", language="bash")
-    st.caption("Model, target, classes, feature names, and input settings come from the .pkl bundle.")
+    st.caption("Model, target, classes, feature names, and input settings are loaded from the selected pickle model.")
+    st.divider()
     configured_model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
     if configured_model not in GEMINI_MODELS:
         configured_model = "gemini-2.0-flash"
@@ -195,7 +197,7 @@ with col_a:
             "Text context for the explanation layer (optional)",
             placeholder="Add non-identifying notes only. This text is not used as a model feature.",
         )
-        submitted = st.form_submit_button("Predict")
+        submitted = st.form_submit_button("🔍 Predict disease", use_container_width=True)
 
 if submitted:
     row = pd.DataFrame([record], columns=model_info["columns"])
@@ -218,11 +220,33 @@ if submitted:
             for cls, prob in zip(pipeline.classes_, probabilities)
         }
 
-    st.subheader("Prediction")
-    st.success(f"Predicted disease: {result['prediction']}")
-    st.json(result)
-    st.subheader("Short Gemini description")
-    st.write(explain_prediction(result, text_context, gemini_model))
+    st.divider()
+    st.markdown("## 🧪 Prediction result")
+    result_col1, result_col2 = st.columns([2, 1])
+    with result_col1:
+        st.success(f"Predicted disease: {result['prediction']}")
+    with result_col2:
+        confidence = result.get("confidence")
+        if confidence is not None:
+            st.metric("Confidence", f"{confidence:.1%}")
+        st.caption(f"Model: {str(result['model']).replace('_', ' ').title()}")
+
+    if result.get("class_probabilities"):
+        st.markdown("**Prediction probabilities**")
+        probability_cols = st.columns(len(result["class_probabilities"]))
+        for index, (class_name, probability) in enumerate(result["class_probabilities"].items()):
+            with probability_cols[index]:
+                st.metric(class_name, f"{probability:.1%}")
+
+    with st.expander("Prediction details", expanded=False):
+        st.write(f"**Dataset:** {result['dataset']}")
+        st.write(f"**Target:** {result['target']}")
+        st.write(f"**Model file:** {result['model_file']}")
+        if result.get("input_symptoms"):
+            st.write("**Input symptoms:** " + ", ".join(result["input_symptoms"]))
+
+    st.markdown("### 🤖 Gemini explanation")
+    st.info(explain_prediction(result, text_context, gemini_model))
     st.download_button(
         "Download result JSON",
         data=json.dumps(result, indent=2),
