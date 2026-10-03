@@ -34,21 +34,23 @@ RANDOM_STATE = 42
 DATASET_CONFIG = {
     "heart_disease": {
         "file": "heart_disease.csv",
-        "target": "Heart Disease Status",
+        "target_aliases": ["Disease", "Heart Disease Status"],
     },
     "diabetes_dataset": {
         "file": "diabetes_dataset.csv",
-        "target": "Target",
+        "target_aliases": ["Disease", "Target"],
     },
     "lung_disease_data": {
         "file": "lung_disease_data.csv",
-        "target": "Disease Type",
+        "target_aliases": ["Disease", "Disease Type"],
     },
     "health_dataset": {
         "file": "health_dataset.csv",
-        "target": "Disease",
+        "target_aliases": ["Disease"],
     },
 }
+
+TARGET_COLUMN = "Disease"
 
 
 def read_table(path: Path) -> pd.DataFrame:
@@ -119,9 +121,16 @@ def train_dataset(dataset_name: str, data_dir: Path, artifact_dir: Path) -> Path
 
     print(f"\n===== {dataset_name} =====")
     df = clean_table(read_table(source_path))
-    target = config["target"]
-    if target not in df.columns:
-        raise ValueError(f"Target {target!r} is missing from {source_path.name}")
+    target = next((column for column in config["target_aliases"] if column in df.columns), None)
+    if target is None:
+        raise ValueError(
+            f"No disease target found in {source_path.name}. "
+            f"Expected one of: {config['target_aliases']}; columns: {list(df.columns)}"
+        )
+
+    if target != TARGET_COLUMN:
+        df = df.rename(columns={target: TARGET_COLUMN})
+    target = TARGET_COLUMN
 
     X = df.drop(columns=[target])
     y = df[target].astype("string").str.strip()
