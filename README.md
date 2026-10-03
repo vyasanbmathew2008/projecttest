@@ -147,6 +147,16 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+## Open notebooks in Google Colab
+
+The notebooks automatically download the four CSV datasets from the public GitHub raw-data links when the files are not available locally.
+
+- [Open Week 1 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_week1_dataset_initial_preprocessing.ipynb)
+- [Open Week 2 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb)
+- [Open the Colab guide](README_COLAB.md)
+
+Run all cells in Week 2 to create the four `.pkl` files under `artifacts/models/`.
+
 ## Run the notebooks
 
 Start JupyterLab from the repository root:
