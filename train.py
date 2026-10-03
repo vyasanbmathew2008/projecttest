@@ -28,7 +28,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_DATA_DIR = ROOT / "data" / "raw"
-DEFAULT_ARTIFACT_DIR = ROOT / "artifacts"
+DEFAULT_MODEL_DIR = ROOT / "models"
 RANDOM_STATE = 42
 
 DATASET_CONFIG = {
@@ -113,7 +113,7 @@ def build_feature_schema(X: pd.DataFrame, numeric_columns: list[str]) -> dict:
     return schema
 
 
-def train_dataset(dataset_name: str, data_dir: Path, artifact_dir: Path) -> Path:
+def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
     config = DATASET_CONFIG[dataset_name]
     source_path = data_dir / config["file"]
     if not source_path.exists():
@@ -206,7 +206,6 @@ def train_dataset(dataset_name: str, data_dir: Path, artifact_dir: Path) -> Path
         "scores": scores,
     }
 
-    model_dir = artifact_dir / "models"
     model_dir.mkdir(parents=True, exist_ok=True)
     model_path = model_dir / f"{dataset_name}.pkl"
     with model_path.open("wb") as handle:
@@ -224,14 +223,14 @@ def parse_args() -> argparse.Namespace:
         help="Train all datasets or one selected dataset (default: all)",
     )
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
-    parser.add_argument("--artifact-dir", type=Path, default=DEFAULT_ARTIFACT_DIR)
+    parser.add_argument("--model-dir", type=Path, default=DEFAULT_MODEL_DIR)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     selected = DATASET_CONFIG.keys() if args.dataset == "all" else [args.dataset]
-    generated = [train_dataset(name, args.data_dir, args.artifact_dir) for name in selected]
+    generated = [train_dataset(name, args.data_dir, args.model_dir) for name in selected]
     print("\nGenerated pickle files:")
     for path in generated:
         print(f"- {path}")
