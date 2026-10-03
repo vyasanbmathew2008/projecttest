@@ -138,8 +138,8 @@ def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -
             contents=prompt,
         )
         return response.text
-    except Exception as exc:
-        return fallback + f"\n\nExplanation service unavailable: {type(exc).__name__}."
+    except Exception:
+        return "Gemini explanation is currently unavailable. Check your Gemini API key and selected model, then try again."
 
 
 st.title("🩺 Medical AI Predictor")
@@ -188,7 +188,8 @@ with col_b:
     st.metric("Model", str(model_info["model_name"]).replace("_", " ").title())
     st.caption(f"Loaded: {model_info['model_path'].name}")
     st.write("Validation balanced accuracy")
-    st.json({name: round(score, 4) for name, score in model_info["scores"].items()})
+    for name, score in model_info["scores"].items():
+        st.metric(name.replace("_", " ").title(), f"{score:.1%}")
 
 with col_a:
     with st.form("prediction_form"):
@@ -247,12 +248,6 @@ if submitted:
 
     st.markdown("### 🤖 Gemini explanation")
     st.info(explain_prediction(result, text_context, gemini_model))
-    st.download_button(
-        "Download result JSON",
-        data=json.dumps(result, indent=2),
-        file_name="prediction_result.json",
-        mime="application/json",
-    )
 
 st.divider()
 st.caption("Educational prototype only. Do not use this output as a diagnosis or as a substitute for qualified professional review.")
