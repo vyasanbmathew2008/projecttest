@@ -44,3 +44,13 @@ The datasets are kept independent and use these targets:
 | `health_dataset.csv` | `Disease` |
 
 The generated pickle files contain the preprocessing pipeline, feature schema, classes, target metadata, and validation scores.
+
+## Local training script
+
+After cloning the repository, the same Week 1–2 workflow is available as a Python script:
+
+```bash
+python train.py
+```
+
+It performs dataset cleaning, preprocessing, model comparison, and `.pkl` export for all four datasets.

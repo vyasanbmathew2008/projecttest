@@ -31,3 +31,13 @@ Each pickle bundle contains the trained pipeline, target, classes, feature names
 - Review class balance and validation metrics.
 - Confirm all four `.pkl` files exist in `artifacts/models/`.
 - Run `streamlit run app.py` and test each disease option.
+
+## Local Python equivalent
+
+The notebook workflow is also available as `train.py` at the repository root:
+
+```bash
+python train.py
+```
+
+This performs the same data cleaning, missing-target handling, preprocessing, model comparison, and `.pkl` bundle export without opening Jupyter.

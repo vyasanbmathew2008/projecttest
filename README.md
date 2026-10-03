@@ -106,6 +106,7 @@ Prediction + Optional GenAI Explanation
 ```text
 .
 ├── app.py                       # Streamlit deployment application
+├── train.py                     # Local cleaning, training, and pickle export
 ├── data/
 │   └── raw/                    # Tabular CSV datasets
 ├── notebooks/
@@ -155,6 +156,37 @@ The notebooks automatically download the four CSV datasets from the public GitHu
 - [Open the Colab guide](README_COLAB.md)
 
 Run all cells in the merged notebook to create the four `.pkl` files under `artifacts/models/`.
+
+## Train locally with `train.py`
+
+To run the complete cleaning, preprocessing, model comparison, and pickle export locally:
+
+```bash
+python train.py
+```
+
+This trains all four datasets and creates:
+
+```text
+artifacts/models/heart_disease.pkl
+artifacts/models/diabetes_dataset.pkl
+artifacts/models/lung_disease_data.pkl
+artifacts/models/health_dataset.pkl
+```
+
+To train only one dataset:
+
+```bash
+python train.py --dataset health_dataset
+```
+
+After training, run the deployment app:
+
+```bash
+streamlit run app.py
+```
+
+`train.py` is the local Python equivalent of the merged Week 1–2 notebook.
 
 ## Run the notebooks
 
