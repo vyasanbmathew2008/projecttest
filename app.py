@@ -14,9 +14,11 @@ ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env")
 
 GEMINI_MODELS = [
-    "gemini-2.0-flash",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
     "gemini-2.5-pro",
 ]
 
@@ -153,9 +155,9 @@ with st.sidebar:
     st.code("streamlit run app.py", language="bash")
     st.caption("Model, target, classes, feature names, and input settings are loaded from the selected pickle model.")
     st.divider()
-    configured_model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    configured_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     if configured_model not in GEMINI_MODELS:
-        configured_model = "gemini-2.0-flash"
+        configured_model = "gemini-2.5-flash"
     gemini_choice = st.selectbox(
         "Gemini model",
         ["Default / configured", *GEMINI_MODELS, "Custom model ID"],
