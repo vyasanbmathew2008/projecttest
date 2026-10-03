@@ -42,7 +42,7 @@ DATASET_CONFIG = {
     },
     "lung_disease_data": {
         "file": "lung_disease_data.csv",
-        "target": "Recovered",
+        "target": "Disease Type",
     },
     "health_dataset": {
         "file": "health_dataset.csv",

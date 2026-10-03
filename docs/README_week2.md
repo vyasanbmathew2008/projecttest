@@ -8,7 +8,7 @@ The notebook trains the four datasets independently, using these targets:
 |---|---|
 | `heart_disease.csv` | `Heart Disease Status` |
 | `diabetes_dataset.csv` | `Target` |
-| `lung_disease_data.csv` | `Recovered` |
+| `lung_disease_data.csv` | `Disease Type` |
 | `health_dataset.csv` | `Disease` |
 
 For each dataset, the notebook performs a stratified split, fits numeric and categorical preprocessing, compares logistic regression with a random forest, and exports a metadata-rich pickle bundle. Rows with missing target values are excluded before splitting. Malformed rows in the uploaded health CSV are skipped safely.

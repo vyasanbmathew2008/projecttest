@@ -131,7 +131,7 @@ The four dataset targets are:
 |---|---|
 | `heart_disease.csv` | `Heart Disease Status` |
 | `diabetes_dataset.csv` | `Target` |
-| `lung_disease_data.csv` | `Recovered` |
+| `lung_disease_data.csv` | `Disease Type` |
 | `health_dataset.csv` | `Disease` |
 
 The Week 2 notebook generates one `.pkl` bundle per dataset. `app.py` lets you select a disease and loads the matching bundle. The generated bundles are ignored by Git so you can manually add them when desired.

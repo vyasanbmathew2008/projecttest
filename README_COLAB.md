@@ -40,7 +40,7 @@ The datasets are kept independent and use these targets:
 |---|---|
 | `heart_disease.csv` | `Heart Disease Status` |
 | `diabetes_dataset.csv` | `Target` |
-| `lung_disease_data.csv` | `Recovered` |
+| `lung_disease_data.csv` | `Disease Type` |
 | `health_dataset.csv` | `Disease` |
 
 The generated pickle files contain the preprocessing pipeline, feature schema, classes, target metadata, and validation scores.

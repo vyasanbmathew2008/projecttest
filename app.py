@@ -13,6 +13,13 @@ from google import genai
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env")
 
+GEMINI_MODELS = [
+    "gemini-2.0-flash",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-pro",
+]
+
 MODELS = {
     "Heart disease": "heart_disease",
     "Diabetes": "diabetes_dataset",
@@ -108,7 +115,7 @@ def make_input_form(model_info: dict):
     return values
 
 
-def explain_prediction(prediction: dict, text_context: str) -> str:
+def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -> str:
     fallback = (
         f"Predicted class: {prediction['prediction']}\n\n"
         f"Confidence: {prediction.get('confidence', 'not available')}\n\n"
@@ -127,7 +134,7 @@ def explain_prediction(prediction: dict, text_context: str) -> str:
             + json.dumps(request, default=str)
         )
         response = client.models.generate_content(
-            model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash"),
+            model=gemini_model,
             contents=prompt,
         )
         return response.text
@@ -144,6 +151,15 @@ with st.sidebar:
     st.markdown("**Run locally**")
     st.code("streamlit run app.py", language="bash")
     st.caption("Model, target, classes, feature names, and input settings come from the .pkl bundle.")
+    configured_model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    if configured_model not in GEMINI_MODELS:
+        configured_model = "gemini-2.0-flash"
+    gemini_model = st.selectbox(
+        "Gemini model",
+        GEMINI_MODELS,
+        index=GEMINI_MODELS.index(configured_model),
+        help="Choose which Gemini model generates the short prediction description.",
+    )
     st.caption(f"Gemini API: {'configured' if os.getenv('GEMINI_API_KEY') else 'not configured (using fallback)'}")
 
 try:
@@ -194,7 +210,7 @@ if submitted:
     st.success(f"Predicted class: {result['prediction']}")
     st.json(result)
     st.subheader("Short Gemini description")
-    st.write(explain_prediction(result, text_context))
+    st.write(explain_prediction(result, text_context, gemini_model))
     st.download_button(
         "Download result JSON",
         data=json.dumps(result, indent=2),

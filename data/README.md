@@ -6,7 +6,7 @@ The `raw/` directory contains four independent tabular datasets. Each has its ow
 |---|---|
 | `heart_disease.csv` | `Heart Disease Status` |
 | `diabetes_dataset.csv` | `Target` |
-| `lung_disease_data.csv` | `Recovered` |
+| `lung_disease_data.csv` | `Disease Type` |
 | `health_dataset.csv` | `Disease` |
 
 Keep credentials and personally identifiable information out of the repository.

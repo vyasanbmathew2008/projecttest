@@ -22,7 +22,7 @@ Show class, confidence, probabilities, and an optional short Gemini description
 |---|---|---|
 | Heart disease | `heart_disease.pkl` | `Heart Disease Status` |
 | Diabetes | `diabetes_dataset.pkl` | `Target` |
-| Lung disease | `lung_disease_data.pkl` | `Recovered` |
+| Lung disease | `lung_disease_data.pkl` | `Disease Type` |
 | Infectious disease / symptoms | `health_dataset.pkl` | `Disease` |
 
 The app reads only the selected pickle bundle. It does not read the training CSV or retrain a model.
@@ -38,3 +38,8 @@ streamlit run app.py
 ## Gemini explanation layer
 
 For the infectious-disease option, users select symptoms, the health pickle model predicts a disease, and if `.env` contains `GEMINI_API_KEY`, the app sends limited prediction metadata to Gemini for a short two-sentence description. Without a key, it uses a deterministic fallback. The description is educational and must not be treated as a diagnosis or treatment recommendation.
+
+
+## Gemini model selector
+
+Use the **Gemini model** dropdown in the sidebar to choose the model used for the short description. The available options are `gemini-2.0-flash`, `gemini-2.5-flash`, `gemini-2.5-flash-lite`, and `gemini-2.5-pro`. Set `GEMINI_MODEL` in `.env` to choose the default option.
