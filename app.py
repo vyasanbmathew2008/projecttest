@@ -164,7 +164,7 @@ st.info(
 
 with st.sidebar:
     st.header("Prediction settings")
-    selected_dataset = st.selectbox("Health area", list(MODELS))
+    selected_dataset = st.selectbox("Health area", list(MODELS), index=list(MODELS).index("Lung disease"))
     st.divider()
     configured_model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
     if configured_model not in GEMINI_MODELS:
