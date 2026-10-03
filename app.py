@@ -128,7 +128,7 @@ def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -
         client = genai.Client(api_key=api_key)
         request = {"prediction": prediction, "user_context": text_context[:2000]}
         prompt = (
-            "Give a short, plain-language description in no more than two sentences for this ML prediction. "
+            "Give a short, plain-language description in no more than two sentences for this disease prediction. "
             "Use only the supplied metadata. Do not diagnose, invent facts, or recommend treatment. "
             "State that professional medical review is required.\n\n"
             + json.dumps(request, default=str)
@@ -219,7 +219,7 @@ if submitted:
         }
 
     st.subheader("Prediction")
-    st.success(f"Predicted class: {result['prediction']}")
+    st.success(f"Predicted disease: {result['prediction']}")
     st.json(result)
     st.subheader("Short Gemini description")
     st.write(explain_prediction(result, text_context, gemini_model))
