@@ -30,6 +30,7 @@ ROOT = Path(__file__).resolve().parent
 DEFAULT_DATA_DIR = ROOT / "data" / "raw"
 DEFAULT_MODEL_DIR = ROOT / "models"
 RANDOM_STATE = 42
+EXCLUDED_FEATURE_COLUMNS = {"recovered"}
 
 DATASET_CONFIG = {
     "heart_disease": {
@@ -149,11 +150,21 @@ def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
             .fillna(df[TARGET_COLUMN].astype("string").str.strip())
         )
 
-    X = df.drop(columns=[target])
+    # Exclude post-outcome columns from model inputs to prevent data leakage.
+    # Column matching is case-insensitive, so Recovered / recovered / RECOVERED are all excluded.
+    excluded_columns = [
+        column for column in df.columns
+        if str(column).strip().lower() in EXCLUDED_FEATURE_COLUMNS
+    ]
+    if excluded_columns:
+        print(f"Excluding leakage-prone feature columns: {excluded_columns}")
+    X = df.drop(columns=[target, *excluded_columns], errors="ignore")
     y = df[target].astype("string").str.strip()
     valid_target = df[target].notna()
     X = X.loc[valid_target].reset_index(drop=True)
     y = y.loc[valid_target].reset_index(drop=True).astype(str)
+    if X.shape[1] == 0:
+        raise ValueError(f"{dataset_name} has no usable feature columns after exclusions")
     if y.nunique() < 2:
         raise ValueError(f"{dataset_name} must contain at least two target classes")
 
