@@ -89,8 +89,8 @@ def make_input_form(model_info: dict):
             values[column] = selected[index] if index < len(selected) else np.nan
         return values
 
-    st.subheader("Structured and text inputs")
-    st.caption("Inputs and field types are loaded from the Week 2 pickle model bundle.")
+    st.subheader("Your information")
+    st.caption("Enter the information below to receive an AI-assisted health prediction.")
     for index, column in enumerate(columns):
         info = feature_schema[column]
         label = str(column)
@@ -119,9 +119,8 @@ def make_input_form(model_info: dict):
 
 def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -> str:
     fallback = (
-        f"Predicted disease: {prediction['prediction']}\n\n"
-        f"Confidence: {prediction.get('confidence', 'not available')}\n\n"
-        "This is a machine-learning output, not a diagnosis. Review the input and consult a qualified professional."
+        f"{prediction['prediction']} is the condition the AI system identified from the information provided. "
+        "This result is only an AI-based prediction, not a medical diagnosis, and should be reviewed by a qualified healthcare professional."
     )
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
@@ -130,9 +129,12 @@ def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -
         client = genai.Client(api_key=api_key)
         request = {"prediction": prediction, "user_context": text_context[:2000]}
         prompt = (
-            "Give a short, plain-language description in no more than two sentences for this disease prediction. "
-            "Use only the supplied metadata. Do not diagnose, invent facts, or recommend treatment. "
-            "State that professional medical review is required.\n\n"
+            "Write a natural, patient-friendly explanation for the predicted condition. "
+            "Return only 2 short sentences. Start by briefly explaining what the predicted condition generally refers to. "
+            "Then explain that the AI identified patterns associated with that condition from the information provided. "
+            "Do NOT mention the algorithm, model type, dataset, pickle file, feature names, confidence score, probability, backend, or technical implementation. "
+            "Do not diagnose, claim certainty, invent patient-specific facts, or recommend treatment. "
+            "End by stating that the result is not a diagnosis and should be reviewed by a qualified healthcare professional.\n\n"
             + json.dumps(request, default=str)
         )
         response = client.models.generate_content(
@@ -145,15 +147,17 @@ def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -
 
 
 st.title("🩺 Medical AI Predictor")
-st.markdown("### AI-powered disease prediction")
-st.write("Choose a dataset, enter the required information, and get a model prediction with a simple Gemini explanation.")
+st.markdown("### Understand your health information with AI")
+st.write(
+    "Provide the requested information and receive an AI-assisted prediction with a clear, easy-to-understand explanation."
+)
+st.info(
+    "For educational use only. This tool does not replace a medical examination, professional advice, or diagnosis."
+)
 
 with st.sidebar:
-    st.header("Model settings")
-    selected_dataset = st.selectbox("Dataset", list(MODELS))
-    st.markdown("**Run locally**")
-    st.code("streamlit run app.py", language="bash")
-    st.caption("Model, target, classes, feature names, and input settings are loaded from the selected pickle model.")
+    st.header("Prediction settings")
+    selected_dataset = st.selectbox("Health area", list(MODELS))
     st.divider()
     configured_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     if configured_model not in GEMINI_MODELS:
@@ -175,8 +179,7 @@ with st.sidebar:
         gemini_model = configured_model
     else:
         gemini_model = gemini_choice
-    st.caption(f"Selected Gemini: {gemini_model}")
-    st.caption(f"Gemini API: {'configured' if os.getenv('GEMINI_API_KEY') else 'not configured (using fallback)'}")
+    st.caption("Used only to generate the plain-language explanation.")
 
 try:
     model_info = load_model(selected_dataset)
@@ -184,23 +187,13 @@ except Exception as exc:
     st.error(str(exc))
     st.stop()
 
-col_a, col_b = st.columns([2, 1])
-with col_b:
-    st.metric("Features", f"{len(model_info['columns']):,}")
-    st.metric("Model", str(model_info["model_name"]).replace("_", " ").title())
-    st.caption(f"Loaded: {model_info['model_path'].name}")
-    st.write("Validation balanced accuracy")
-    for name, score in model_info["scores"].items():
-        st.metric(name.replace("_", " ").title(), f"{score:.1%}")
-
-with col_a:
-    with st.form("prediction_form"):
-        record = make_input_form(model_info)
-        text_context = st.text_area(
-            "Text context for the explanation layer (optional)",
-            placeholder="Add non-identifying notes only. This text is not used as a model feature.",
-        )
-        submitted = st.form_submit_button("🔍 Predict disease", use_container_width=True)
+with st.form("prediction_form"):
+    record = make_input_form(model_info)
+    text_context = st.text_area(
+        "Additional information (optional)",
+        placeholder="Add any non-identifying information you would like the AI to consider for the explanation.",
+    )
+    submitted = st.form_submit_button("🔍 Check prediction", use_container_width=True)
 
 if submitted:
     row = pd.DataFrame([record], columns=model_info["columns"])
@@ -224,32 +217,28 @@ if submitted:
         }
 
     st.divider()
-    st.markdown("## 🧪 Prediction result")
-    result_col1, result_col2 = st.columns([2, 1])
+    st.markdown("## 🧪 Your result")
+    result_col1, result_col2 = st.columns([2.5, 1])
     with result_col1:
-        st.success(f"Predicted disease: {result['prediction']}")
+        st.success(f"### {result['prediction']}")
+        st.caption("This is the condition identified by the AI from the information provided.")
     with result_col2:
         confidence = result.get("confidence")
         if confidence is not None:
-            st.metric("Confidence", f"{confidence:.1%}")
-        st.caption(f"Model: {str(result['model']).replace('_', ' ').title()}")
+            st.metric("Prediction confidence", f"{confidence:.1%}")
 
     if result.get("class_probabilities"):
-        st.markdown("**Prediction probabilities**")
+        st.markdown("#### Prediction overview")
         probability_cols = st.columns(len(result["class_probabilities"]))
         for index, (class_name, probability) in enumerate(result["class_probabilities"].items()):
             with probability_cols[index]:
                 st.metric(class_name, f"{probability:.1%}")
 
-    with st.expander("Prediction details", expanded=False):
-        st.write(f"**Dataset:** {result['dataset']}")
-        st.write(f"**Target:** {result['target']}")
-        st.write(f"**Model file:** {result['model_file']}")
-        if result.get("input_symptoms"):
-            st.write("**Input symptoms:** " + ", ".join(result["input_symptoms"]))
-
-    st.markdown("### 🤖 Gemini explanation")
+    st.markdown("### 🤖 What this result means")
     st.info(explain_prediction(result, text_context, gemini_model))
+    st.caption(
+        "Important: An AI prediction can be incorrect. If you have symptoms or health concerns, consult a qualified healthcare professional."
+    )
 
 st.divider()
 st.caption("Educational prototype only. Do not use this output as a diagnosis or as a substitute for qualified professional review.")
