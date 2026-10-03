@@ -119,42 +119,63 @@ def build_feature_schema(X: pd.DataFrame, numeric_columns: list[str]) -> dict:
 
 
 def prepare_lung_dataset(data_dir: Path, processed_dir: Path) -> pd.DataFrame:
-    """Merge the original lung-disease data with the lung-cancer dataset before training."""
-    base = clean_table(read_table(data_dir / "lung_disease_data.csv"))
+    """Prepare the lung-cancer dataset for binary lung-cancer prediction."""
     cancer_path = data_dir / "lung_cancer.csv"
-    cancer = clean_table(read_table(cancer_path))
+    if not cancer_path.exists():
+        raise FileNotFoundError(f"Lung cancer dataset not found: {cancer_path}")
 
-    if "Disease Type" in base.columns and "Disease" not in base.columns:
-        base = base.rename(columns={"Disease Type": "Disease"})
+    cancer = clean_table(read_table(cancer_path))
     if "LUNG_CANCER" not in cancer.columns:
         raise ValueError(
             f"{cancer_path.name} must contain a LUNG_CANCER target column. "
             f"Columns found: {list(cancer.columns)}"
         )
+
     cancer = cancer.rename(columns={"LUNG_CANCER": "Disease"})
     cancer["Disease"] = (
         cancer["Disease"].astype("string").str.strip().str.lower()
-        .map({"yes": "Lung Cancer", "no": "No Lung Cancer", "1": "Lung Cancer", "0": "No Lung Cancer"})
+        .map({
+            "yes": "Lung Cancer",
+            "no": "No Lung Cancer",
+            "1": "Lung Cancer",
+            "0": "No Lung Cancer",
+        })
         .fillna(cancer["Disease"].astype("string").str.strip())
     )
+
     cancer = cancer.rename(columns={
-        "GENDER": "Gender", "AGE": "Age", "SMOKING": "Smoking",
-        "YELLOW_FINGERS": "Yellow Fingers", "CHRONIC DISEASE": "Chronic Disease",
-        "FATIGUE ": "Fatigue", "ALLERGY ": "Allergy", "WHEEZING": "Wheezing",
-        "ALCOHOL CONSUMING": "Alcohol Consuming", "COUGHING": "Coughing",
+        "GENDER": "Gender",
+        "AGE": "Age",
+        "YELLOW_FINGERS": "Yellow Fingers",
+        "CHRONIC DISEASE": "Chronic Disease",
+        "FATIGUE ": "Fatigue",
+        "ALLERGY ": "Allergy",
+        "WHEEZING": "Wheezing",
+        "COUGHING": "Coughing",
         "SHORTNESS OF BREATH": "Shortness of Breath",
-        "SWALLOWING DIFFICULTY": "Swallowing Difficulty", "CHEST PAIN": "Chest Pain",
+        "CHEST PAIN": "Chest Pain",
     })
-    base = base.drop(columns=["Treatment Type", "Recovered"], errors="ignore")
-    cancer = cancer.drop(columns=["Recovered"], errors="ignore")
-    base["Dataset Source"] = "lung_disease_data"
-    cancer["Dataset Source"] = "lung_cancer"
-    merged = clean_table(pd.concat([base, cancer], ignore_index=True, sort=False))
+
+    keep_columns = [
+        "Gender",
+        "Age",
+        "Yellow Fingers",
+        "Chronic Disease",
+        "Fatigue",
+        "Allergy",
+        "Wheezing",
+        "Coughing",
+        "Shortness of Breath",
+        "Chest Pain",
+        "Disease",
+    ]
+    cancer = cancer[[column for column in keep_columns if column in cancer.columns]]
+
     processed_dir.mkdir(parents=True, exist_ok=True)
     merged_path = processed_dir / "lung_merged_dataset.csv"
-    merged.to_csv(merged_path, index=False)
-    print(f"Merged lung dataset: {len(base)} + {len(cancer)} = {len(merged)} rows -> {merged_path}")
-    return merged
+    cancer.to_csv(merged_path, index=False)
+    print(f"Lung cancer dataset prepared: {len(cancer)} rows -> {merged_path}")
+    return cancer
 
 
 def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
