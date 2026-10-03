@@ -2,13 +2,13 @@
 
 > A three-week educational machine-learning workflow for dataset preparation, complete preprocessing, ML modelling, model evaluation, deployment, and GenAI implementation using tabular CSV datasets.
 
-This project uses one retained medical CSV dataset: the heart-disease dataset. The Week 1–3 workflow is configured specifically for this dataset. Week 3 deployment is implemented in `app.py`, not as a separate notebook.
+This project uses four independent medical CSV datasets. Each dataset has its own target, preprocessing pipeline, and pickle model. The Week 3 deployment is implemented in `app.py`, not as a separate notebook.
 
 > **Important:** This is an educational prototype, not a medical device or diagnostic system. Predictions must not be used as a diagnosis or substitute for qualified professional review.
 
 ## Project features
 
-- Dataset profiling and initial data preprocessing
+- Dataset profiling and initial data preprocessing for all four CSV datasets
 - Missing-value, duplicate, schema, and data-type analysis
 - Leakage-safe numeric and categorical preprocessing
 - Logistic regression and random forest baseline models
@@ -54,7 +54,7 @@ This phase builds the complete modelling pipeline:
 Local outputs (not committed):
 
 - `artifacts/week2_model_results.csv`
-- `artifacts/models/<dataset>_<model>.pkl`
+- `artifacts/models/<dataset>.pkl` (one pickle bundle per dataset)
 
 ### Week 3 — Model Evaluation and Deployment with GenAI Implementation
 
@@ -113,7 +113,8 @@ Prediction + Optional GenAI Explanation
 │   └── 02_week2_complete_preprocessing_ml_modelling.ipynb
 ├── docs/
 │   ├── README_week1.md
-│   └── README_week2.md
+│   ├── README_week2.md
+│   └── README_week3.md
 ├── requirements.txt
 └── README.md
 ```
@@ -124,14 +125,16 @@ The committed tabular CSV files are stored in `data/raw/`:
 
 - `heart_disease.csv`
 
-The current default Week 2 and Week 3 task is:
+The four dataset targets are:
 
-```text
-Dataset: heart_disease.csv
-Target:  Heart Disease Status
-```
+| Dataset | Target |
+|---|---|
+| `heart_disease.csv` | `Heart Disease Status` |
+| `diabetes_dataset.csv` | `Target` |
+| `lung_disease_data.csv` | `Recovered` |
+| `health_dataset.csv` | `Disease` |
 
-The notebooks and Streamlit application are configured for `heart_disease.csv` with target `Heart Disease Status`.
+The Week 2 notebook generates one `.pkl` bundle per dataset. `app.py` lets you select a disease and loads the matching bundle. The generated bundles are ignored by Git so you can manually add them when desired.
 
 ## Installation
 
@@ -155,8 +158,8 @@ jupyter lab
 Run the notebooks in order:
 
 1. Week 1 — profile the CSV datasets.
-2. Week 2 — train and save the best model pipeline.
-3. Week 3 — run `app.py` to deploy the saved model with optional Gemini explanations.
+2. Week 2 — train all four datasets and save one `.pkl` bundle per dataset.
+3. Week 3 — run `app.py`, select a disease, and deploy its saved `.pkl` model with optional Gemini explanations.
 
 ## Run the Streamlit deployment
 

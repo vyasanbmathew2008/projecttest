@@ -1,15 +1,33 @@
-# Week 2 notebook guide — Complete Preprocessing and ML Modelling
+# Week 2 — Complete Preprocessing and ML Modelling
 
 Notebook: [`../notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb`](../notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb)
 
-## Purpose
+The notebook trains the four datasets independently, using these targets:
 
-The default task is `heart_disease.csv` with target `Heart Disease Status`. The notebook performs a stratified split before fitting transformations, imputes numeric and categorical values inside a scikit-learn pipeline, one-hot encodes text/categorical values, compares logistic regression with random forest, and serializes the best complete pipeline.
+| Dataset | Target |
+|---|---|
+| `heart_disease.csv` | `Heart Disease Status` |
+| `diabetes_dataset.csv` | `Target` |
+| `lung_disease_data.csv` | `Recovered` |
+| `health_dataset.csv` | `Disease` |
 
-## Inputs and outputs
+For each dataset, the notebook performs a stratified split, fits numeric and categorical preprocessing, compares logistic regression with a random forest, and exports a metadata-rich pickle bundle. Rows with missing target values are excluded before splitting. Malformed rows in the uploaded health CSV are skipped safely.
 
-The notebook is configured for `heart_disease.csv` and `Heart Disease Status`. The notebook reads the training CSV from `../data/raw/` and writes the local, ignored outputs `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.pkl`.
+## Outputs
+
+Local outputs are ignored by Git:
+
+- `../artifacts/models/heart_disease.pkl`
+- `../artifacts/models/diabetes_dataset.pkl`
+- `../artifacts/models/lung_disease_data.pkl`
+- `../artifacts/models/health_dataset.pkl`
+- `../artifacts/week2_model_results.csv`
+
+Each pickle bundle contains the trained pipeline, target, classes, feature names, input schema, model name, and validation scores. `app.py` loads these bundles and does not read the training CSV files.
 
 ## Completion checklist
 
-Confirm the target is appropriate, review class imbalance, retain preprocessing and estimator together, verify the pickle export, and do not merge unrelated disease targets.
+- Confirm all four targets are appropriate.
+- Review class balance and validation metrics.
+- Confirm all four `.pkl` files exist in `artifacts/models/`.
+- Run `streamlit run app.py` and test each disease option.

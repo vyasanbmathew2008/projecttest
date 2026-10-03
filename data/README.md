@@ -1,7 +1,12 @@
 # Data directory
 
-The `raw/` directory contains the retained tabular dataset used by the notebooks and Streamlit app:
+The `raw/` directory contains four independent tabular datasets. Each has its own target and model; they are not concatenated.
 
-- `heart_disease.csv`
+| Dataset | Target |
+|---|---|
+| `heart_disease.csv` | `Heart Disease Status` |
+| `diabetes_dataset.csv` | `Target` |
+| `lung_disease_data.csv` | `Recovered` |
+| `health_dataset.csv` | `Disease` |
 
 Keep credentials and personally identifiable information out of the repository.
