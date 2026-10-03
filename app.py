@@ -129,12 +129,19 @@ def explain_prediction(prediction: dict, text_context: str, gemini_model: str) -
         client = genai.Client(api_key=api_key)
         request = {"prediction": prediction, "user_context": text_context[:2000]}
         prompt = (
-            "Write a natural, patient-friendly explanation for the predicted condition. "
-            "Return only 2 short sentences. Start by briefly explaining what the predicted condition generally refers to. "
-            "Then explain that the AI identified patterns associated with that condition from the information provided. "
-            "Do NOT mention the algorithm, model type, dataset, pickle file, feature names, confidence score, probability, backend, or technical implementation. "
-            "Do not diagnose, claim certainty, invent patient-specific facts, or recommend treatment. "
-            "End by stating that the result is not a diagnosis and should be reviewed by a qualified healthcare professional.\n\n"
+            "Give a practical, patient-friendly next-step guide for the predicted health condition. "
+            "Return 3 short sections with these labels exactly: What it may mean, What to do next, Get emergency help if. "
+            "In 'What it may mean', briefly explain the condition without claiming the person has it. "
+            "In 'What to do next', explain an appropriate level of follow-up such as routine doctor/clinic review, prompt medical assessment, or urgent assessment when appropriate. "
+            "Do not tell someone to be admitted to a hospital solely because of this AI prediction. "
+            "In 'Get emergency help if', list important red-flag symptoms that warrant emergency care for the predicted condition. "
+            "For heart-related predictions, include severe or persistent chest pressure/pain, severe shortness of breath, fainting, or pain spreading to the arm, jaw, neck or back. "
+            "For lung-related predictions, include severe difficulty breathing, blue/grey lips or skin, coughing blood, or severe chest pain. "
+            "For other conditions, give only broadly recognized emergency warning signs relevant to that condition. "
+            "Do NOT mention the algorithm, model type, dataset, pickle file, feature names, backend, or technical implementation. "
+            "Do not diagnose, claim certainty, prescribe medicines, recommend a specific dose, or invent patient-specific facts. "
+            "Make clear that the prediction can be wrong and that a healthcare professional must assess symptoms and confirm any diagnosis. "
+            "Use clear language suitable for a general patient.\n\n"
             + json.dumps(request, default=str)
         )
         response = client.models.generate_content(
