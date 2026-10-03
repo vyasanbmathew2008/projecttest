@@ -32,7 +32,7 @@ MODELS = {
 st.set_page_config(page_title="Medical AI Predictor", page_icon="🩺", layout="wide", initial_sidebar_state="expanded")
 
 
-@st.cache_resource(show_spinner="Loading the Week 2 pickle model...")
+@st.cache_resource(show_spinner="Loading the prediction model...")
 def load_model(dataset_label: str):
     dataset_stem = MODELS[dataset_label]
     model_dir = ROOT / "models"
@@ -48,7 +48,7 @@ def load_model(dataset_label: str):
     if not isinstance(bundle, dict) or "pipeline" not in bundle or "feature_schema" not in bundle:
         raise ValueError(
             "The pickle file does not contain the expected model bundle. "
-            "Re-run the Week 2 notebook to generate the current .pkl format."
+            "Please retrain the selected model with train.py."
         )
 
     return {
@@ -166,9 +166,9 @@ with st.sidebar:
     st.header("Prediction settings")
     selected_dataset = st.selectbox("Health area", list(MODELS))
     st.divider()
-    configured_model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    configured_model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
     if configured_model not in GEMINI_MODELS:
-        configured_model = "gemini-2.5-flash"
+        configured_model = "gemini-3.5-flash-lite"
     gemini_choice = st.selectbox(
         "Gemini model",
         ["Default / configured", *GEMINI_MODELS, "Custom model ID"],
@@ -186,7 +186,6 @@ with st.sidebar:
         gemini_model = configured_model
     else:
         gemini_model = gemini_choice
-    st.caption("Used only to generate the plain-language explanation.")
 
 try:
     model_info = load_model(selected_dataset)
