@@ -164,7 +164,10 @@ def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
         raise FileNotFoundError(f"Dataset not found: {source_path}")
 
     print(f"\n===== {dataset_name} =====")
-    df = clean_table(read_table(source_path))
+    if dataset_name == "lung_disease_data":
+        df = prepare_lung_dataset(data_dir, DEFAULT_PROCESSED_DIR)
+    else:
+        df = clean_table(read_table(source_path))
     target = next((column for column in config["target_aliases"] if column in df.columns), None)
     if target is None:
         raise ValueError(
