@@ -49,7 +49,7 @@ This phase builds the complete modelling pipeline:
 - Logistic regression baseline
 - Random forest baseline
 - Balanced-accuracy comparison
-- Serialization of the best complete pipeline
+- Serialization of the best complete pipeline, feature schema, and model metadata into one pickle bundle
 
 Local outputs (not committed):
 

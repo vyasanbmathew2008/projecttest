@@ -8,7 +8,7 @@ The default task is `heart_disease.csv` with target `Heart Disease Status`. The 
 
 ## Inputs and outputs
 
-The notebook is configured for `heart_disease.csv` and `Heart Disease Status`. The notebook reads from `../data/raw/` and writes the local, ignored outputs `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.pkl`.
+The notebook is configured for `heart_disease.csv` and `Heart Disease Status`. The notebook reads the training CSV from `../data/raw/` and writes the local, ignored outputs `../artifacts/week2_model_results.csv` and `../artifacts/models/<dataset>_<model>.pkl`.
 
 ## Completion checklist
 
