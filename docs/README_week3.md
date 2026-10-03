@@ -29,7 +29,7 @@ The app reads only the selected pickle bundle. It does not read the training CSV
 
 ## Run
 
-First run all cells in [`02_week2_complete_preprocessing_ml_modelling.ipynb`](../notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb) to create the four local bundles, then run:
+First run all cells in [`01_02_week1_week2_preprocessing_ml_modelling.ipynb`](../notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb) to create the four local bundles, then run:
 
 ```bash
 streamlit run app.py

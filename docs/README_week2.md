@@ -1,6 +1,6 @@
 # Week 2 — Complete Preprocessing and ML Modelling
 
-Notebook: [`../notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb`](../notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb)
+Notebook: [`../notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb`](../notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 
 The notebook trains the four datasets independently, using these targets:
 

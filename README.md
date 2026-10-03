@@ -23,7 +23,7 @@ This project uses four independent medical CSV datasets. Each dataset has its ow
 
 ### Week 1 — Dataset & Initial Data Preprocessing
 
-Notebook: [`notebooks/01_week1_dataset_initial_preprocessing.ipynb`](notebooks/01_week1_dataset_initial_preprocessing.ipynb)
+Notebook: [`notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb`](notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 
 This phase establishes the data contract for the CSV datasets:
 
@@ -39,7 +39,7 @@ Local output (not committed): `artifacts/week1_dataset_profile.csv`
 
 ### Week 2 — Complete Preprocessing & ML Modelling
 
-Notebook: [`notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb`](notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb)
+Notebook: [`notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb`](notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 
 This phase builds the complete modelling pipeline:
 
@@ -109,8 +109,7 @@ Prediction + Optional GenAI Explanation
 ├── data/
 │   └── raw/                    # Tabular CSV datasets
 ├── notebooks/
-│   ├── 01_week1_dataset_initial_preprocessing.ipynb
-│   └── 02_week2_complete_preprocessing_ml_modelling.ipynb
+│   └── 01_02_week1_week2_preprocessing_ml_modelling.ipynb
 ├── docs/
 │   ├── README_week1.md
 │   ├── README_week2.md
@@ -151,11 +150,11 @@ cp .env.example .env
 
 The notebooks automatically download the four CSV datasets from the public GitHub raw-data links when the files are not available locally.
 
-- [Open Week 1 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_week1_dataset_initial_preprocessing.ipynb)
-- [Open Week 2 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb)
+- [Open Week 1 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
+- [Open Week 2 in Google Colab](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 - [Open the Colab guide](README_COLAB.md)
 
-Run all cells in Week 2 to create the four `.pkl` files under `artifacts/models/`.
+Run all cells in the merged notebook to create the four `.pkl` files under `artifacts/models/`.
 
 ## Run the notebooks
 
@@ -168,7 +167,7 @@ jupyter lab
 Run the notebooks in order:
 
 1. Week 1 — profile the CSV datasets.
-2. Week 2 — train all four datasets and save one `.pkl` bundle per dataset.
+2. Week 2 — continue in the same merged notebook to train all four datasets and save one `.pkl` bundle per dataset.
 3. Week 3 — run `app.py`, select a disease, and deploy its saved `.pkl` model with optional Gemini explanations.
 
 ## Run the Streamlit deployment

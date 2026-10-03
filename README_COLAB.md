@@ -4,13 +4,12 @@ This project can be run in Google Colab without manually uploading the CSV files
 
 ## Open the notebooks
 
-- [Week 1 — Dataset and Initial Data Preprocessing](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_week1_dataset_initial_preprocessing.ipynb)
-- [Week 2 — Complete Preprocessing and ML Modelling](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/02_week2_complete_preprocessing_ml_modelling.ipynb)
+- [Week 1 — Dataset and Initial Data Preprocessing](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
+- [Week 2 — Complete Preprocessing and ML Modelling](https://colab.research.google.com/github/vyasanbmathew2008/projecttest/blob/main/notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 
 ## Run order
 
-1. Open Week 1 and use **Runtime → Run all** to download and profile the datasets.
-2. Open Week 2 and use **Runtime → Run all** to train the four disease models.
+1. Open the merged Week 1–2 notebook and use **Runtime → Run all**. Week 1 profiles the datasets first, then Week 2 trains the four disease models.
 3. The notebook writes these local files in the Colab runtime:
 
 ```text

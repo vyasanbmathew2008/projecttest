@@ -1,6 +1,6 @@
 # Week 1 notebook guide — Dataset and Initial Data Preprocessing
 
-Notebook: [`../notebooks/01_week1_dataset_initial_preprocessing.ipynb`](../notebooks/01_week1_dataset_initial_preprocessing.ipynb)
+Notebook: [`../notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb`](../notebooks/01_02_week1_week2_preprocessing_ml_modelling.ipynb)
 
 ## Purpose
 
