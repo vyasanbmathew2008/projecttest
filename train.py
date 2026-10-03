@@ -31,6 +31,7 @@ DEFAULT_DATA_DIR = ROOT / "data" / "raw"
 DEFAULT_MODEL_DIR = ROOT / "models"
 RANDOM_STATE = 42
 EXCLUDED_FEATURE_COLUMNS = {"recovered"}
+LUNG_EXCLUDED_FEATURE_COLUMNS = {"treatment type"}
 
 DATASET_CONFIG = {
     "heart_disease": {
@@ -152,9 +153,12 @@ def train_dataset(dataset_name: str, data_dir: Path, model_dir: Path) -> Path:
 
     # Exclude post-outcome columns from model inputs to prevent data leakage.
     # Column matching is case-insensitive, so Recovered / recovered / RECOVERED are all excluded.
+    excluded_names = set(EXCLUDED_FEATURE_COLUMNS)
+    if dataset_name == "lung_disease_data":
+        excluded_names.update(LUNG_EXCLUDED_FEATURE_COLUMNS)
     excluded_columns = [
         column for column in df.columns
-        if str(column).strip().lower() in EXCLUDED_FEATURE_COLUMNS
+        if str(column).strip().lower() in excluded_names
     ]
     if excluded_columns:
         print(f"Excluding leakage-prone feature columns: {excluded_columns}")
